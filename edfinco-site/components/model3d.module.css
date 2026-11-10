@@ -1,0 +1,182 @@
+/* Animated stage for 3D model renders — see Model3D.tsx for the layer rationale. */
+.stage {
+  position: relative;
+  isolation: isolate;
+  perspective: 1100px;
+}
+
+.model {
+  position: relative;
+  z-index: 1;
+  border-radius: var(--m-r);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.model :global(img) {
+  display: block;
+}
+/* Tilt only while the pointer is over it; returns to transform:none (sharp) on leave. */
+.stage[data-tilt="on"] .model {
+  transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) scale(1.015);
+  transition: transform 0.12s ease-out;
+}
+
+/* Halo behind the model */
+.glow {
+  position: absolute;
+  z-index: 0;
+  inset: 6% 4%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    rgba(245, 158, 11, 0.55),
+    rgba(37, 99, 235, 0.35) 55%,
+    transparent 100%
+  );
+  filter: blur(34px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+/* Light sweep — clipped to the model's rounded box */
+.shine {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: var(--m-r);
+  overflow: hidden;
+  pointer-events: none;
+}
+.shine::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: -60%;
+  width: 40%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.28) 45%,
+    rgba(251, 191, 36, 0.22) 55%,
+    transparent 100%
+  );
+  transform: skewX(-12deg) translateX(0);
+  opacity: 0;
+}
+
+/* Orbiting gold sparkles */
+.spark {
+  position: absolute;
+  z-index: 3;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff7d6 0%, var(--gold, #f59e0b) 55%, transparent 72%);
+  box-shadow: 0 0 12px 3px rgba(251, 191, 36, 0.55);
+  pointer-events: none;
+  opacity: 0;
+}
+.s1 {
+  top: 8%;
+  right: 6%;
+}
+.s2 {
+  bottom: 12%;
+  left: 4%;
+  width: 7px;
+  height: 7px;
+}
+.s3 {
+  top: 46%;
+  right: -1%;
+  width: 6px;
+  height: 6px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .glow {
+    animation: glowPulse 5s ease-in-out infinite;
+  }
+  .shine::before {
+    animation: sweep 6.5s ease-in-out 1.2s infinite;
+  }
+  .spark {
+    animation: orbit 7s ease-in-out infinite;
+  }
+  .s2 {
+    animation-duration: 8.5s;
+    animation-delay: 1.4s;
+  }
+  .s3 {
+    animation-duration: 6s;
+    animation-delay: 2.6s;
+  }
+  /* One-shot pop when the parent <Reveal> shows it; no fill → ends at transform:none. */
+  :global(.reveal[data-reveal="shown"]) .model {
+    animation: popIn 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage[data-tilt="on"] .model {
+    transform: none;
+  }
+}
+
+@keyframes glowPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.06);
+  }
+}
+@keyframes sweep {
+  0% {
+    transform: skewX(-12deg) translateX(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  38% {
+    transform: skewX(-12deg) translateX(420%);
+    opacity: 1;
+  }
+  45%,
+  100% {
+    transform: skewX(-12deg) translateX(420%);
+    opacity: 0;
+  }
+}
+@keyframes orbit {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+    transform: translate(-18px, 14px) scale(1.15);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6);
+  }
+}
+@keyframes popIn {
+  from {
+    transform: scale(0.92) rotateX(6deg);
+  }
+  to {
+    transform: none;
+  }
+}

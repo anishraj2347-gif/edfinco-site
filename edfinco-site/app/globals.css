@@ -1,0 +1,472 @@
+/* ------------------------------------------------------------------ *
+ * EdFinco design system — tokens + reusable utilities.
+ * Palette "Gold + Emerald":
+ *   forest green #0C2B1E (deep base — hero/stats/footer/dark sections, white text ~15:1)
+ *   emerald #0F766E (accents, icon fills, focus ring) · links/eyebrow TEXT (~5:1 on cream)
+ *     — use the darker #0B5A52 for text on the emerald tint; #10B981 is decorative FILL only
+ *   gold #F59E0B → #FBBF24 (FILLS/GRAPHICS ONLY — never body text or thin strokes on light)
+ *   page bg #FBF8F0 (cream) · cards #FFFFFF · ink #14211C (warm near-black on light).
+ * Gold-on-forest and forest-on-gold both pass AA; gold-on-cream does NOT — use gold as fill only.
+ * The primary CTA is a gold gradient fill with FOREST text (never white on gold).
+ * Font: Lexend (self-hosted via next/font, exposed as --font-lexend from layout.tsx).
+ * ------------------------------------------------------------------ */
+
+:root {
+  /* Brand anchors — "Gold + Emerald" */
+  --forest: #0c2b1e; /* deep base — hero, stats, footer, dark sections (white text ~15:1) */
+  --forest-2: #14402e; /* hero/dark gradient partner */
+  --emerald: #0f766e; /* emerald — accents, icon fills, focus ring; legible as text (~5:1 on cream) */
+  --emerald-700: #0b5a52; /* darker emerald — text on emerald tint / any borderline spot (~7:1) */
+  --emerald-bright: #10b981; /* brighter emerald — decorative FILLS only (fails as text) */
+  --gold: #f59e0b; /* gold — FILLS/GRAPHICS ONLY (fails as text/thin stroke on cream) */
+  --gold-2: #fbbf24; /* lighter gold — gradient partner; legible as text ONLY on forest */
+  --ink: #14211c; /* warm near-black — body + headings on light */
+
+  /* Tints */
+  --emerald-50: #e6f2ef; /* emerald section bg / chips */
+  --gold-50: #fef6e7; /* gold section bg / chips */
+
+  /* Neutral scale */
+  --white: #ffffff;
+  --bg: #fbf8f0; /* page background (warm cream) */
+  --muted: #475569; /* body text on light — contrast ~7.5:1 on cream */
+  --muted-soft: #64748b;
+  --line: #e2e8f0;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+
+  /* Gradients */
+  --grad-brand: linear-gradient(135deg, var(--emerald-bright) 0%, var(--gold) 100%); /* decorative blobs/lines */
+  --grad-forest: linear-gradient(160deg, #0c2b1e 0%, #14402e 100%); /* hero + all dark sections */
+  --grad-cta: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); /* gold CTA fill — FOREST text */
+  --grad-accent-text: linear-gradient(100deg, #10b981 0%, #fbbf24 100%); /* headline word on FOREST (emerald→gold) */
+  --grad-page: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+
+  /* Radius */
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 22px;
+  --r-xl: 30px;
+  --r-full: 999px;
+
+  /* Shadow */
+  --shadow-sm: 0 1px 2px rgba(12, 43, 30, 0.06);
+  --shadow-md: 0 8px 24px rgba(12, 43, 30, 0.08);
+  --shadow-lg: 0 24px 60px rgba(12, 43, 30, 0.16);
+
+  /* Spacing scale */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 24px;
+  --s-6: 32px;
+  --s-7: 48px;
+  --s-8: 64px;
+  --s-9: 96px;
+
+  --container: 1140px;
+  --font-sans: var(--font-lexend), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+}
+
+/* Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 100px; /* offset sticky header (announce ~31px + 68px bar) for in-page anchors */
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.6;
+  font-size: 17px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Lexend is the ONLY typeface. Form controls don't inherit the page font by default, so force it. */
+button,
+input,
+select,
+textarea,
+optgroup {
+  font-family: inherit;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: var(--emerald);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+/* Visible focus for keyboard users (WCAG 2.2) */
+:focus-visible {
+  outline: 3px solid var(--emerald);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Skip link */
+.skipLink {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  background: var(--forest);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 0 0 var(--r-sm) 0;
+}
+.skipLink:focus {
+  left: 0;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ------------------------- Layout utilities ------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(16px, 5vw, 32px);
+}
+
+.section {
+  padding-block: clamp(48px, 8vw, 96px);
+}
+
+.sectionHead {
+  max-width: 720px;
+  margin-bottom: var(--s-7);
+}
+.sectionHead.center {
+  margin-inline: auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--emerald); /* emerald eyebrow — ~5:1 on cream */
+  margin-bottom: var(--s-3);
+}
+/* Short animated emerald accent line that grows in beside the eyebrow
+   (emerald, not gold — a thin stroke on cream must stay legible) */
+.eyebrow::after {
+  content: "";
+  width: 28px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--emerald);
+  transform-origin: left center;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .eyebrow::after {
+    animation: accentGrow 0.7s ease both;
+  }
+}
+
+h2.h2,
+.h2 {
+  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
+}
+.subhead {
+  margin-top: var(--s-4);
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  color: var(--muted);
+}
+
+/* Grid */
+.grid {
+  display: grid;
+  gap: var(--s-5);
+}
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 900px) {
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s-6);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Badge / notice / chips */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 8px 14px;
+  border-radius: var(--r-full);
+  font-size: 0.86rem;
+  font-weight: 600;
+  background: var(--emerald-50);
+  color: var(--emerald-700); /* darker emerald on the emerald tint — ~7:1 */
+  border: 1px solid rgba(15, 118, 110, 0.25);
+}
+
+.notice {
+  border-left: 4px solid var(--emerald);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  padding: var(--s-5);
+  color: var(--ink);
+  font-size: 0.98rem;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  list-style: none;
+  padding: 0;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: 9px 15px;
+  border-radius: var(--r-full);
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* Buttons — min tap target 44px */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: var(--r-full);
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  text-decoration: none;
+}
+.btn:hover {
+  text-decoration: none;
+}
+.btn-primary {
+  /* gold gradient fill with FOREST text (never white on gold) */
+  background: var(--grad-cta);
+  color: var(--forest);
+  box-shadow: var(--shadow-md);
+}
+.btn-primary:hover {
+  background: var(--gold);
+  transform: translateY(-2px);
+  /* soft gold glow on lift */
+  box-shadow: 0 10px 28px rgba(245, 158, 11, 0.45), 0 2px 6px rgba(245, 158, 11, 0.3);
+}
+.btn-secondary {
+  background: #fff;
+  color: var(--forest);
+  border-color: var(--line);
+}
+.btn-secondary:hover {
+  border-color: var(--emerald);
+  transform: translateY(-2px);
+  /* emerald glow on lift */
+  box-shadow: 0 8px 20px rgba(15, 118, 110, 0.25);
+}
+.btn-ghost {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.btn-ghost:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Icon badge used for lender/category icons (emerald fill, white icon ≥4.5:1). */
+.codeBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-md);
+  background: var(--emerald);
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+/* Reveal-on-scroll (progressive enhancement; visible by default if JS/observer off).
+   Pending blocks are only hidden once JS is active: the Reveal component adds `.reveal-ready`
+   to <html> on mount, so if JS fails to hydrate the content stays visible (not stuck at opacity:0).
+   The <noscript> rule in layout.tsx is a belt-and-braces fallback for JS-disabled browsers. */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-ready .reveal[data-reveal="pending"] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .reveal[data-reveal="shown"] {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* ---------------------------- Motion keyframes --------------------------- *
+ * All decorative; globally neutralised by the prefers-reduced-motion guard below. */
+@keyframes accentGrow {
+  from {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+/* Animated gradient sweep for the highlighted headline word */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+/* Gentle vertical float for hero art / badges */
+@keyframes floaty {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+@keyframes floatBadge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+/* Slow drift for decorative blurred blobs */
+@keyframes blobDrift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(14px, -18px, 0) scale(1.06);
+  }
+}
+
+/* Gradient-text utility used by the hero accent word */
+.gradText {
+  background: var(--grad-accent-text);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gradText {
+    animation: gradientShift 6s linear infinite alternate;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

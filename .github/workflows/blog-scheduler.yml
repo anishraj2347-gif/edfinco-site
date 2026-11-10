@@ -1,0 +1,39 @@
+# Hourly "is anything due?" check for the EdFinco blog automation.
+#
+# It only calls the website's scheduler endpoint; the website decides whether a draft, reminder
+# or "published" email is due (lib/server/tick.ts). No AI runs here, and it uses a few seconds of
+# GitHub Actions time per hour (well inside the free allowance for private repos).
+#
+# Setup (GitHub repo → Settings → Secrets and variables → Actions):
+#   Variable  SITE_URL     e.g. https://www.edfinco.com
+#   Secret    CRON_SECRET  the same value as CRON_SECRET in Vercel
+name: Blog scheduler
+
+on:
+  schedule:
+    - cron: "7 * * * *" # every hour at :07 (UTC); GitHub may start it a few minutes late
+  workflow_dispatch: {}
+
+permissions: {}
+
+concurrency:
+  group: blog-scheduler
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Ask the website whether any blog work is due
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$SITE_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "SITE_URL or CRON_SECRET is not set yet; skipping."
+            exit 0
+          fi
+          curl --fail --silent --show-error --max-time 90 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$SITE_URL/api/automation/tick"

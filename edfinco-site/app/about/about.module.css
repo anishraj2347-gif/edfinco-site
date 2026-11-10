@@ -1,0 +1,168 @@
+/* /about page — reuses design tokens + utilities from app/globals.css. */
+
+/* Dark hero band (same forest gradient as the rest of the site). */
+.hero {
+  background: var(--grad-forest);
+  color: #fff;
+  padding-block: clamp(56px, 9vw, 104px);
+}
+.heroEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-2); /* legible gold on forest */
+  margin-bottom: var(--s-3);
+}
+.heroTitle {
+  color: #fff;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  max-width: 18ch;
+}
+.heroSubhead {
+  margin-top: var(--s-4);
+  max-width: 62ch;
+  font-size: clamp(1rem, 1.6vw, 1.18rem);
+  color: rgba(255, 255, 255, 0.86);
+}
+.notALenderBadge {
+  margin-top: var(--s-5);
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: 62ch;
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 0.94rem;
+}
+.notALenderBadge svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--gold-2);
+}
+
+/* Alternating light section background. */
+.alt {
+  background: var(--surface-2);
+}
+
+/* Who-we-are prose. */
+.prose {
+  max-width: 760px;
+}
+.proseBody {
+  margin-top: var(--s-4);
+  color: var(--muted);
+  font-size: clamp(1rem, 1.4vw, 1.1rem);
+}
+
+/* What-we-do pillars. */
+.pillars {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.pillarIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: var(--r-md);
+  background: var(--emerald-50);
+  color: var(--emerald);
+  margin-bottom: var(--s-4);
+}
+.pillarTitle {
+  font-size: 1.05rem;
+  margin-bottom: var(--s-2);
+}
+.pillarBody {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Destinations chips. */
+.destChips {
+  gap: var(--s-3);
+}
+
+/* Can / can't. */
+.honestHeading {
+  max-width: 20ch;
+  margin-bottom: var(--s-6);
+}
+.canHeading,
+.cantHeading {
+  font-size: 1.2rem;
+  margin-bottom: var(--s-5);
+}
+.canList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+}
+.canItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  color: var(--muted);
+  font-size: 0.97rem;
+}
+.marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-full);
+  margin-top: 1px;
+}
+.markerCan {
+  background: var(--emerald-50);
+  color: var(--emerald);
+}
+.markerCant {
+  background: #fef2f2;
+  color: #b42318; /* AA on the light-red tint */
+}
+
+.notALenderLine {
+  margin-top: var(--s-7);
+  font-size: 0.95rem;
+}
+
+/* CTA band (dark). */
+.ctaBand {
+  background: var(--grad-forest);
+  color: #fff;
+  padding-block: clamp(48px, 8vw, 88px);
+}
+.ctaInner {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.ctaHeading {
+  color: #fff;
+  font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+  max-width: 20ch;
+}
+.ctaBody {
+  margin-top: var(--s-4);
+  margin-bottom: var(--s-6);
+  max-width: 54ch;
+  color: rgba(255, 255, 255, 0.86);
+}

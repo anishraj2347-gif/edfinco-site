@@ -1,0 +1,119 @@
+.footer {
+  background: var(--grad-forest);
+  color: rgba(255, 255, 255, 0.86);
+  padding-block: clamp(48px, 7vw, 80px) 32px;
+  margin-top: var(--s-8);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  gap: var(--s-7);
+}
+@media (max-width: 960px) {
+  .grid {
+    grid-template-columns: 1.6fr 1fr 1fr;
+  }
+  .brandCol {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-6);
+  }
+  .brandCol {
+    grid-column: 1 / -1;
+  }
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+.logoMark {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--emerald);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+.tagline {
+  margin-top: var(--s-3);
+  color: var(--gold-2);
+  font-weight: 600;
+}
+.contact {
+  margin-top: var(--s-4);
+  line-height: 2;
+}
+.contact a {
+  color: rgba(255, 255, 255, 0.86);
+}
+.contact a:hover {
+  color: #fff;
+}
+
+.colHeading {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: var(--s-4);
+  font-weight: 700;
+}
+.linkCol ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+.linkCol a {
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.95rem;
+}
+.linkCol a:hover {
+  color: #fff;
+}
+
+.disclaimerWrap {
+  margin-top: var(--s-7);
+  padding-top: var(--s-5);
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+.disclaimer {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 820px;
+}
+.copyright {
+  margin-top: var(--s-4);
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.56);
+}
+.ownerNote {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
+}
+
+/* Brand logo on a white card — the navy "Ed" in the logo would vanish on the dark footer */
+.brand:has(.logoImg) {
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  background: #fff;
+}
+.logoImg {
+  display: block;
+  height: 34px;
+  width: auto;
+}

@@ -1,0 +1,200 @@
+# Blog automation — how it works and how to switch it on
+
+Every blog post is written by Claude, **approved by an admin**, and only then published.
+Writing and rewriting run on the owner's **Claude Pro plan** (a Claude Code *routine*), so there
+is **no AI bill**: no Anthropic API key is used anywhere.
+
+```
+ hourly check (GitHub Actions)        approval email           Approve ─────► goes live at the set time
+          │                                 ▲                     │
+          ▼                                 │                     │ Request changes
+  website: "posting time − email lead"  website emails the        ▼
+  reached? ── yes ──► fires the Claude ──► draft (after its    Claude routine revises ──► new email (v2, v3…)
+                       Pro routine         compliance checks)
+```
+
+- **Admin dashboard:** `/admin` (sign in with a one-time email link). Pause/resume the automation,
+  set the **posting time** and **how many hours before it the approval email goes out** (1–24 h,
+  default 12), see the post in progress, all posts, the topic backlog and recent activity.
+- **Approval email:** full draft + compliance notes, with **Approve** and **Request changes**
+  buttons. Each opens a secure page for that one version; one more click confirms. Old links stop
+  working when a newer version is sent.
+- **Nothing unapproved is ever published.** If a draft isn't approved by its posting time it moves
+  to the next day (you get an email), and no extra drafts are written while it waits. A reminder
+  goes out about 2 hours before the posting time.
+- **Times are India time (IST).**
+
+## What it costs
+
+| Piece | Service | Cost |
+|---|---|---|
+| Writing + rewriting | Claude Code routine on your **Claude Pro** plan | Included in Pro (runs count toward Pro usage limits) |
+| Database | Neon Postgres, free plan | Free |
+| Email | Resend, free plan (3,000 emails/month) | Free |
+| Hourly check | GitHub Actions, private repo (~720 of 2,000 free minutes/month) | Free |
+| Hosting | Your Next.js host | **See note** |
+
+> **Hosting note:** Vercel's free *Hobby* plan is for non-commercial use only, so a business site
+> needs **Vercel Pro (about US$20/month)** or a host whose free tier allows commercial use
+> (for example Netlify). The code is standard Next.js and runs on any Node host; the steps below use
+> Vercel as the example.
+
+## One-time setup (about 30 minutes)
+
+You need: the private GitHub repo, a hosting account, and access to edfinco.com's DNS (for email).
+
+### 1. Deploy the website
+1. Import the GitHub repo into your host. **Root directory: `edfinco-site`**.
+2. Add a Postgres database: Vercel → *Storage* → *Create* → **Neon** → connect it to the project
+   (this sets `DATABASE_URL` automatically). On another host, create a free Neon project and copy
+   its **pooled** connection string into `DATABASE_URL`.
+3. First visit: the database tables are created automatically and the three launch posts plus the
+   topic backlog are imported.
+
+### 2. Email (Resend)
+1. Sign up at resend.com → *Domains* → add `edfinco.com` → add the DNS records it shows → wait for
+   *Verified*.
+2. *API Keys* → create a key.
+3. Until the domain is verified you can test with `EMAIL_FROM=EdFinco <onboarding@resend.dev>`,
+   which only delivers to the email you signed up to Resend with.
+
+### 3. Environment variables (host → Settings → Environment Variables)
+Use `.env.example` as the checklist:
+
+| Variable | Value |
+|---|---|
+| `APP_URL` | `https://www.edfinco.com` |
+| `MAIN_ADMIN_EMAILS` | your email: the main admin (full access, the only one who can approve new people) |
+| `RESEND_API_KEY` | from step 2 |
+| `EMAIL_FROM` | `EdFinco <notifications@edfinco.com>` |
+| `CRON_SECRET` | a long random string (`node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`) |
+| `ROUTINE_FIRE_URL`, `ROUTINE_FIRE_TOKEN` | from step 4 |
+
+Redeploy after changing variables.
+
+### 4. The Claude writer (your Pro plan)
+1. **Cloud environment** — claude.ai/code → *Environments* → **New environment** named
+   `edfinco-writer`. *Network access*: **Custom**, *Allowed domains*: `www.edfinco.com` (one per
+   line; add `edfinco.com` too if the site is served there). Leave "Also include default list"
+   unticked. (The *Default* environment can't be edited, which is why a new one is needed.)
+2. **Routine** — claude.ai/code/routines → **New** → name it `EdFinco blog writer`:
+   - *Prompt*: paste the box from `automation/routine-prompt.md`.
+   - *Environment*: `edfinco-writer`. *Repository*: none needed.
+   - *Trigger*: **Add API trigger**. Copy the **URL** into `ROUTINE_FIRE_URL` and the **token** into
+     `ROUTINE_FIRE_TOKEN` (the token is shown only once). No schedule is needed: the website
+     decides when to run it.
+3. Redeploy so the website picks up the two values.
+
+### 5. The hourly check (GitHub Actions)
+GitHub repo → *Settings* → *Secrets and variables* → *Actions*:
+- *Variables* → `SITE_URL` = `https://www.edfinco.com`
+- *Secrets* → `CRON_SECRET` = the same value as in step 3
+
+Then *Actions* → **Blog scheduler** → *Run workflow* once to test. (The site also runs the check
+when someone visits the blog or the dashboard, as a backup.)
+
+### 6. Switch it on
+1. Go to `https://www.edfinco.com/admin` → enter the main admin email → click the link in the email.
+2. *System check* should show four ✓.
+3. Set the posting time and the email lead time → **Save schedule** → **Turn automation on**.
+4. Optional: **Write the next draft now** to see the first approval email straight away.
+
+## Day to day
+- **Approve:** click *Approve* in the email (or open the post in the dashboard).
+- **Request changes:** click *Request changes*, type what to change; the revised version arrives
+  by email within a few minutes. Repeat as often as you like.
+- **Pause / change the time / change the email lead time:** dashboard → *Automation* / *Schedule*.
+  Changing the posting time also moves posts already scheduled.
+- **Take a post down:** dashboard → the post → *Take it off the website*.
+- **Topics:** the writer works through the backlog in order; add or skip topics in the dashboard.
+  When it runs low, the writer suggests new ones.
+
+## Consultation requests (`/admin/leads`)
+Every request from the consultation form is **stored**, **assigned to one team member in turn**
+(only team members with *Gets new requests* switched on), and **only that person is emailed
+straight away**: name, phone, plan and message, with *Call now*, *WhatsApp*, *Email* and *Open in
+dashboard* buttons; replying to that email writes to the student. If nobody has *Gets new requests*
+on, the request goes to the admins unassigned, so nothing is lost. The student gets one
+confirmation email with their reference number (e.g. `EDF-7K3Q9M`).
+- **Reassign:** on the request page, choose someone in *Assigned to* → *Assign and email them*.
+  The new person gets an "Assigned to you" email.
+- **Work a request:** open it → *Call* / *WhatsApp* / *Email* → **Mark as Contacted** (it's
+  assigned to you). Then move it to *In progress*, *Converted*, *Not interested* or *Spam*, and add
+  notes so everyone sees the history.
+- **Nothing slips through:** a request still *New* after 2 hours triggers one reminder email to the
+  assigned person **and the main admin**, with the assignee's name and phone (9 am to 9 pm India
+  time). A failed alert is retried automatically.
+- **Filters:** To do, each status, All; search by name, email, phone or reference; *Only mine*.
+- **Export CSV** for Excel / Google Sheets (every export is logged).
+- **Delete** (admins only) for data-erasure requests.
+- Protection: same-origin form only, a hidden bot trap, limits per IP and per email address, and no
+  IP address or tracking data is stored.
+
+### Two-step form and partial leads
+The form has two steps. **Step 1** asks for name, email, phone and the consent tick, and says:
+*"We'll use these details to contact you about your enquiry, even if you don't finish the next
+step."* **Step 2** asks for the study plans. If a student completes step 1 but not step 2 within
+30 minutes, the request becomes an **Incomplete** lead: the team is emailed, it appears under the
+*Incomplete* tab, and it's copied to the Sheet's **Partial** tab. If they finish later, it moves to
+*Submitted* (the Partial row is marked "Completed later"). Details typed before the student agrees
+to be contacted are never saved: that keeps the partial leads consented under India's data
+protection law (DPDP Act). Ask your lawyer before changing that.
+
+### Google Sheet (free)
+Every request is copied to a Google Sheet you own, with two tabs: **Submitted** (finished the form)
+and **Partial** (left after step 1). Status and assignment changes update the row; deleting a
+request removes its rows.
+1. Create a Google Sheet (any name, e.g. "EdFinco consultation requests").
+2. *Extensions* → *Apps Script*. Delete the sample code and paste all of
+   `automation/google-sheet-apps-script.gs`.
+3. Make a long random secret (`node -e "console.log(require('crypto').randomBytes(32).toString('base64url'))"`)
+   and paste it into the `SECRET` line. Save.
+4. *Deploy* → *New deployment* → type **Web app** → *Execute as*: **Me** → *Who has access*:
+   **Anyone** → *Deploy*. Approve the permissions (Google may warn the app isn't verified because
+   it's your own script: *Advanced* → *Go to …*). The script only asks for access to this one
+   spreadsheet. Copy the **Web app URL**.
+5. In your host's environment variables set `SHEETS_WEBHOOK_URL` (the URL) and
+   `SHEETS_WEBHOOK_SECRET` (the same secret), then redeploy.
+6. Dashboard → *Consultation requests* → **Copy all to Google Sheet** (copies anything from before).
+
+Only people you share the Sheet with can see it. "Anyone" in step 4 only means the website can
+reach the script; every change is refused without the secret. If you change the script later, use
+*Deploy* → *Manage deployments* → edit → *New version* so the URL stays the same.
+
+## Team & access (`/admin/team`)
+- **Main admin** = `MAIN_ADMIN_EMAILS`. Always has access; the only account that can approve,
+  reject, remove people or change their role. It can't be removed from the dashboard (no lock-out).
+- **Add someone** with their **name, email and phone number** as *Team* (consultation requests
+  only) or *Admin* (everything, incl. the blog and adding people). If an admin adds them, they're **pending**: the main admin gets an email and
+  nobody can send them a sign-in link until it's approved. People the main admin adds are active
+  straight away. New members are emailed how to sign in.
+- **Remove** ends their access and signs them out everywhere at once.
+- **Gets new requests:** on by default for *Team*, off for *Admin*. Switch someone off while they're
+  away; requests rotate between everyone who's on.
+- **My details:** everyone keeps their own name and phone up to date (click your email in the top
+  bar). The main admin can also edit anyone's details on the Team page.
+- Who gets which emails: each new consultation request goes to the one person it's assigned to
+  (or the admins if nobody is in the rotation); blog approval emails go to admins.
+
+## Troubleshooting
+- **No approval email:** dashboard → *System check*. "Scheduler last ran" should be under an hour
+  ago; if not, check the GitHub Actions run. Then open the post → *Writer* for the last error.
+- **"Writer problem" email:** open the post → *Retry the writer*, or reject it to get a different
+  post. The *Writer* panel links to the Claude session so you can see what happened.
+- **Routine API changes:** the routine API trigger is a beta feature. If Anthropic changes it, the
+  writer can instead run in GitHub Actions on the same Pro plan (`claude setup-token` →
+  `CLAUDE_CODE_OAUTH_TOKEN`); the website side doesn't change.
+
+## Local development
+`npm run dev` works with no accounts: an embedded database lives in `.data/pglite`, emails are
+saved to `.data/outbox/`, and writer jobs are written to `.data/dev-fires/`. Run
+`node scripts/dev-worker.mjs` to play the routine's part with a clearly-labelled test draft.
+`.env.local` sets the local admin email; open the newest file in `.data/outbox/` for the sign-in link.
+
+## Security notes (nomad findings stay designed out)
+- No secrets reach the browser; every key lives in server environment variables.
+- Sign-in links, review links and writer tokens are 256-bit random, single-purpose, short-lived,
+  and stored only as hashes. Nothing changes state on a plain link visit (mail scanners pre-fetch).
+- All admin and review forms are same-origin only; sessions use HttpOnly, Secure, SameSite cookies.
+- Rate limits on sign-in and review pages; every action is recorded in the activity log.
+- Posts are rendered from a safe Markdown subset (no raw HTML) and validated before anyone sees them.

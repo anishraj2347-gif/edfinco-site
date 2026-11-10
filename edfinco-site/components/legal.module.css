@@ -1,0 +1,105 @@
+/* Shared styles for the /privacy, /terms, /disclaimer template pages.
+   Reuses design tokens from app/globals.css. */
+
+/* Dark hero band (same forest gradient as the rest of the site). */
+.hero {
+  background: var(--grad-forest);
+  color: #fff;
+  padding-block: clamp(48px, 8vw, 88px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-2); /* legible gold on forest */
+  margin-bottom: var(--s-3);
+}
+
+.title {
+  color: #fff;
+  font-size: clamp(1.9rem, 4.5vw, 3rem);
+}
+
+.intro {
+  margin-top: var(--s-4);
+  max-width: 62ch;
+  font-size: clamp(1rem, 1.5vw, 1.12rem);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+/* Body. */
+.body {
+  background: var(--bg);
+}
+
+.layout {
+  max-width: 760px;
+}
+
+/* Owner / lawyer notice callout. */
+.ownerNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  padding: var(--s-5);
+  border-radius: var(--r-md);
+  background: var(--gold-50);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-left: 4px solid var(--gold);
+  margin-bottom: var(--s-6);
+}
+.ownerNoticeIcon {
+  flex-shrink: 0;
+  display: inline-flex;
+  color: #92400e; /* dark amber — AA on the gold-50 tint */
+  margin-top: 2px;
+}
+.ownerNoticeText {
+  margin: 0;
+  color: #7c2d12; /* dark amber-brown — strong contrast on gold-50 */
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.lastUpdated {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-bottom: var(--s-6);
+}
+
+/* Sections. */
+.section {
+  margin-bottom: var(--s-6);
+}
+.section:last-of-type {
+  margin-bottom: 0;
+}
+.sectionHeading {
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+  margin-bottom: var(--s-3);
+}
+.paragraph {
+  color: var(--muted);
+  margin-bottom: var(--s-3);
+}
+.paragraph:last-child {
+  margin-bottom: 0;
+}
+.list {
+  margin: var(--s-2) 0 0;
+  padding-left: var(--s-5);
+  color: var(--muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+}
+
+.notALender {
+  margin-top: var(--s-7);
+  font-size: 0.95rem;
+}

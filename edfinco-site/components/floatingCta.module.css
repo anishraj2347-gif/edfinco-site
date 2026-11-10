@@ -1,0 +1,38 @@
+.fab {
+  position: fixed;
+  right: clamp(14px, 3vw, 28px);
+  bottom: clamp(14px, 3vw, 28px);
+  z-index: 90;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 12px 20px;
+  border-radius: var(--r-full);
+  /* gold CTA fill with FOREST text, matching the primary button */
+  background: var(--grad-cta);
+  color: var(--forest);
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.fab:hover {
+  transform: translateY(-2px);
+  text-decoration: none;
+  /* gold glow on lift */
+  box-shadow: 0 28px 70px rgba(245, 158, 11, 0.4);
+}
+.label {
+  white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+  .label {
+    display: none;
+  }
+  .fab {
+    padding: 14px;
+    min-width: 56px;
+    justify-content: center;
+  }
+}
