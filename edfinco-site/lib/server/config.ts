@@ -45,6 +45,8 @@ export const config = {
   appUrl: appUrl(),
   /** Postgres connection string (render.yaml sets DATABASE_URL; Neon/Vercel may set POSTGRES_URL). */
   databaseUrl: env("DATABASE_URL") || env("POSTGRES_URL"),
+  /** Render sets RENDER on its services (see clientIp in http.ts). */
+  onRender: Boolean(env("RENDER")),
   /** Local escape hatch: allow the embedded dev database under `next start`. Never set on a host. */
   allowLocalDb: env("LOCAL_PGLITE") === "1",
   /**

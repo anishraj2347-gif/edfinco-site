@@ -47,7 +47,18 @@ export function isSameOrigin(request: NextRequest): boolean {
   return true;
 }
 
+/**
+ * The visitor's IP, used only to key rate limits, so it must come from a header the hosting edge
+ * sets itself: a value the visitor controls would let one person rotate fake addresses past every
+ * per-IP limit. Render runs behind Cloudflare, which always sets CF-Connecting-IP to the real
+ * visitor, while Render keeps any X-Forwarded-For the visitor sent at the front of that list.
+ * Vercel overwrites X-Forwarded-For, so its first entry is the visitor there.
+ */
 export function clientIp(request: NextRequest): string {
+  if (config.onRender) {
+    const cf = request.headers.get("cf-connecting-ip");
+    if (cf) return cf.trim().slice(0, 64);
+  }
   const fwd = request.headers.get("x-forwarded-for");
   if (fwd) return fwd.split(",")[0].trim().slice(0, 64);
   return (request.headers.get("x-real-ip") ?? "unknown").slice(0, 64);
