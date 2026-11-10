@@ -48,7 +48,14 @@ async function createDb(): Promise<Db> {
         return Array.from(rows) as T[];
       },
       async exec(text: string): Promise<void> {
-        await sql.unsafe(text).simple();
+        // The schema script is one BEGIN … COMMIT transaction. postgres.js refuses a BEGIN on a
+        // shared pool connection (UNSAFE_TRANSACTION), so it runs on a connection reserved for it.
+        const conn = await sql.reserve();
+        try {
+          await conn.unsafe(text).simple();
+        } finally {
+          conn.release();
+        }
       },
     };
   }
