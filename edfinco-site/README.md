@@ -3,7 +3,7 @@
 The marketing and lead-generation site for **EdFinco** (www.edfinco.com), an education-loan
 assistance platform for Indian students going abroad. EdFinco is not a lender.
 
-**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · CSS Modules · Postgres (Neon) ·
+**Stack:** Next.js 16 (App Router) · React 19 · TypeScript · CSS Modules · Postgres ·
 Resend email · a Claude Code routine on Claude Pro for the blog writer · Lexend is the only typeface.
 
 ## What's in it
@@ -37,9 +37,10 @@ npx tsc --noEmit       # type check
 
 ## Deploying
 
-See **`docs/production-checklist.md`**: accounts, every environment variable, go-live steps in
-order, and the content and legal items to finish before launch. Service how-tos are in
-`docs/blog-automation-setup.md`.
+Hosted on **Render**: `../render.yaml` (repository root) is the Blueprint that creates the web
+service and its Postgres database in Singapore. See **`docs/production-checklist.md`**: accounts,
+every environment variable, go-live steps in order, and the content and legal items to finish
+before launch. Service how-tos are in `docs/blog-automation-setup.md`.
 
 ## Where things are
 

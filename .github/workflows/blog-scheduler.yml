@@ -6,7 +6,7 @@
 #
 # Setup (GitHub repo → Settings → Secrets and variables → Actions):
 #   Variable  SITE_URL     e.g. https://www.edfinco.com
-#   Secret    CRON_SECRET  the same value as CRON_SECRET in Vercel
+#   Secret    CRON_SECRET  the same value as CRON_SECRET on Render (web service > Environment)
 name: Blog scheduler
 
 on:

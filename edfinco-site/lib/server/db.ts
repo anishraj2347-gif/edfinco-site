@@ -1,4 +1,4 @@
-// Database access. Production: Postgres via DATABASE_URL (Neon free tier through Vercel).
+// Database access. Production: Postgres via DATABASE_URL (Render Postgres, or Neon).
 // Local development: an embedded Postgres (PGlite) stored in .data/pglite — no account needed.
 //
 // Every query is parameterised ($1, $2 …); SQL is never built from user input. JSON columns are
@@ -16,16 +16,30 @@ export interface Db {
   exec(text: string): Promise<void>;
 }
 
+// TLS is required for any database reached over the internet (Neon, Render's external URL).
+// Two exceptions: this computer (localhost) uses none, and Render's private network, whose
+// hostnames are a single label such as "dpg-abc123-a", uses TLS whenever the server offers it;
+// that traffic never leaves Render's network.
+function sslMode(url: string): false | "require" | "prefer" {
+  let host: string;
+  try {
+    host = new URL(url).hostname;
+  } catch {
+    return "require";
+  }
+  if (host === "localhost" || host === "127.0.0.1") return false;
+  return host.includes(".") ? "require" : "prefer";
+}
+
 async function createDb(): Promise<Db> {
   if (config.databaseUrl) {
     const { default: postgres } = await import("postgres");
-    const local = /@(localhost|127\.0\.0\.1)[:/]/.test(config.databaseUrl);
     const sql = postgres(config.databaseUrl, {
       prepare: false, // works with Neon's pooled (pgbouncer) connection string
       max: 3,
       idle_timeout: 20,
       connect_timeout: 10,
-      ssl: local ? false : "require",
+      ssl: sslMode(config.databaseUrl),
       onnotice: () => {},
     });
     return {
@@ -41,7 +55,7 @@ async function createDb(): Promise<Db> {
 
   if (config.isProd && !config.allowLocalDb) {
     throw new Error(
-      "DATABASE_URL is not set. Connect a Postgres database (e.g. Neon via Vercel) before deploying."
+      "DATABASE_URL is not set. Connect a Postgres database (render.yaml does this on Render) before deploying."
     );
   }
   const { PGlite } = await import("@electric-sql/pglite");

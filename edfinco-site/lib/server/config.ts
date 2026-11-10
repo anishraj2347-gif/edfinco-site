@@ -16,7 +16,12 @@ function emailList(name: string): string[] {
 }
 
 function appUrl(): string {
-  const raw = env("APP_URL") || (isProd ? "https://www.edfinco.com" : "http://localhost:3000");
+  // Render sets RENDER_EXTERNAL_URL (https://<service>.onrender.com) itself, so a new Render site
+  // links to its own address until APP_URL is set to the real domain.
+  const raw =
+    env("APP_URL") ||
+    env("RENDER_EXTERNAL_URL") ||
+    (isProd ? "https://www.edfinco.com" : "http://localhost:3000");
   const url = raw.replace(/\/+$/, "");
   const local = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(url);
   if (isProd && !url.startsWith("https://") && !local) {
@@ -38,9 +43,9 @@ function routineFireUrl(): string {
 export const config = {
   isProd,
   appUrl: appUrl(),
-  /** Postgres connection string (Neon/Vercel set DATABASE_URL or POSTGRES_URL). */
+  /** Postgres connection string (render.yaml sets DATABASE_URL; Neon/Vercel may set POSTGRES_URL). */
   databaseUrl: env("DATABASE_URL") || env("POSTGRES_URL"),
-  /** Local escape hatch: allow the embedded dev database under `next start`. Never set on Vercel. */
+  /** Local escape hatch: allow the embedded dev database under `next start`. Never set on a host. */
   allowLocalDb: env("LOCAL_PGLITE") === "1",
   /**
    * The MAIN admin(s): always have full access and are the only ones who can approve new dashboard
