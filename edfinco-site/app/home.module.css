@@ -637,14 +637,7 @@
   align-items: start;
 }
 .whyMedia {
-  position: relative;
-}
-@media (min-width: 861px) {
-  /* the photo stays in view (below the sticky header) while the table scrolls past */
-  .whyMedia {
-    position: sticky;
-    top: 124px;
-  }
+  position: relative; /* scrolls normally with the page (no sticky: owner found it odd) */
 }
 .whyMedia img {
   width: 100%;

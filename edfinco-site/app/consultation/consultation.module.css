@@ -76,18 +76,13 @@
   }
 }
 
-/* Sidebar. */
+/* Sidebar. Scrolls normally with the page. It used to be sticky (top: 96px), but at ~900px it is
+   taller than most laptop screens, so while the form scrolled the photo stayed pinned and the
+   bottom of the sidebar was cut off (and its top slid under the 99px header). */
 .sidebar {
-  position: sticky;
-  top: 96px;
   display: flex;
   flex-direction: column;
   gap: var(--s-5);
-}
-@media (max-width: 860px) {
-  .sidebar {
-    position: static;
-  }
 }
 
 .sidebarHeading {
