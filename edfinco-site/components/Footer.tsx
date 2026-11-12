@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { HOME, SITE } from "@/lib/content";
+import { IconInstagram, IconMail } from "./Icons";
 import styles from "./footer.module.css";
 
 // Internal site pages (next/link, same-origin). Legal pages are templates pending lawyer review.
@@ -30,13 +31,35 @@ export default function Footer() {
             />
           </span>
           <p className={styles.tagline}>{SITE.tagline}</p>
-          <p className={styles.contact}>
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-            <br />
-            <a href={SITE.instagramUrl} rel="noopener noreferrer" target="_blank">
-              {SITE.instagram}
-            </a>
-          </p>
+          <ul className={styles.contact}>
+            <li>
+              <a href={`mailto:${SITE.email}`} className={styles.contactLink}>
+                <span className={styles.contactIcon} aria-hidden="true">
+                  <IconMail width={17} height={17} />
+                </span>
+                <span>
+                  <span className="sr-only">Email: </span>
+                  {SITE.email}
+                </span>
+              </a>
+            </li>
+            <li>
+              <a
+                href={SITE.instagramUrl}
+                rel="noopener noreferrer"
+                target="_blank"
+                className={styles.contactLink}
+              >
+                <span className={styles.contactIcon} aria-hidden="true">
+                  <IconInstagram width={17} height={17} />
+                </span>
+                <span>
+                  <span className="sr-only">Instagram: </span>
+                  {SITE.instagram}
+                </span>
+              </a>
+            </li>
+          </ul>
         </div>
 
         <nav className={styles.linkCol} aria-label="Footer">

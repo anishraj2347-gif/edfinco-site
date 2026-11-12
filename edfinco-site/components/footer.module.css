@@ -55,15 +55,40 @@
   color: var(--gold-2);
   font-weight: 600;
 }
+/* Email + Instagram, each with an icon chip */
 .contact {
   margin-top: var(--s-4);
-  line-height: 2;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
 }
-.contact a {
+.contactLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-3);
   color: rgba(255, 255, 255, 0.86);
 }
-.contact a:hover {
+.contactLink:hover {
   color: #fff;
+  text-decoration: none;
+}
+.contactIcon {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--gold-2); /* gold on forest, matching the tagline above */
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.contactLink:hover .contactIcon {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(251, 191, 36, 0.5);
 }
 
 .colHeading {
