@@ -628,33 +628,45 @@
 }
 
 /* ============================== COMPARE ============================ */
-/* award-podium image beside the comparison table (square) */
-.whyLayout {
+/* Photo + comparison table in ONE card. The photo fills the card's left panel edge to edge
+   and always matches the table's height (it is absolutely positioned via next/image `fill`,
+   so the table alone sets the row height). No sticky: it scrolls with the page. */
+.whyCard {
   display: grid;
-  grid-template-columns: 0.75fr 1.25fr;
-  gap: clamp(24px, 4vw, 48px);
-  /* top-aligned: centring the photo against the much taller table left big empty gaps */
-  align-items: start;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
 }
 .whyMedia {
-  position: relative; /* scrolls normally with the page (no sticky: owner found it odd) */
-}
-.whyMedia img {
-  width: 100%;
-  height: auto;
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--line);
+  position: relative;
+  min-height: 360px;
   background: var(--gold-50);
 }
+.whyImg {
+  object-fit: cover;
+  /* public/photos/why-portrait.jpg: keeps the graduate (full cap) + her mother's hand centred */
+  object-position: 56% 50%;
+}
+/* inside the card the table drops its own card styling */
+.whyCard .compare {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
 @media (max-width: 860px) {
-  .whyLayout {
+  .whyCard {
     grid-template-columns: 1fr;
   }
+  /* phones/tablets: the photo becomes a landscape banner across the top of the card */
   .whyMedia {
-    order: -1;
-    max-width: 340px;
-    margin-inline: auto;
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+  }
+  .whyImg {
+    object-position: 50% 12%;
   }
 }
 .compare {

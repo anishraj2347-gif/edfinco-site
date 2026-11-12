@@ -434,15 +434,17 @@ export default function HomePage() {
               <p className="subhead">{c.why.section.subhead}</p>
             </div>
 
-            <div className={styles.whyLayout}>
+            {/* One card: the photo fills its left panel edge to edge (cover-cropped to the
+                table's height), the comparison table sits on the right. Phones: photo on top. */}
+            <div className={styles.whyCard}>
               <div className={styles.whyMedia}>
                 <Image
-                  src="/photos/why.jpg"
+                  src="/photos/why-portrait.jpg"
                   alt="A proud mother congratulating her daughter on graduation day"
-                  width={1000}
-                  height={1000}
-                  sizes="(max-width: 860px) 340px, 400px"
+                  fill
+                  sizes="(max-width: 860px) 100vw, 680px"
                   quality={85}
+                  className={styles.whyImg}
                 />
               </div>
               {/* Real <table> so header↔cell associations survive at every breakpoint (the
