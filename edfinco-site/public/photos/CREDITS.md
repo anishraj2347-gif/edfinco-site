@@ -25,3 +25,4 @@ EdFinco customers and must never be captioned as testimonials or outcomes.
 | why.jpg | https://www.pexels.com/photo/10460163/ |
 | consult-call.jpg | https://www.pexels.com/photo/8837777/ |
 | consult-family.jpg | https://www.pexels.com/photo/4308016/ |
+| hero-cutout.webp | https://www.pexels.com/photo/7616706/ (same photo as hero.jpg; background removed locally with the open-source ISNet model, 2026-11-12) |

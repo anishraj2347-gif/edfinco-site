@@ -74,21 +74,24 @@ export default function Footer() {
         </nav>
       </div>
 
-      <div className={`container ${styles.disclaimerWrap}`}>
-        {/* Compliance spine (5 of 5): "EdFinco is not a lender" — site-wide. */}
-        <p className={styles.disclaimer}>{HOME.footerDisclaimer}</p>
-        {/* Legal name comes from SITE.legalEntity (owner confirmed "EdFinco", 2026-11-10). Owner action
-            still required: any regulatory/disclosure text before launch (docs/homepage-spec.md #1). */}
-        {SITE.legalEntity ? (
-          <p className={styles.copyright}>
-            © {year} {SITE.legalEntity}. All rights reserved.
-          </p>
-        ) : (
-          <p className={styles.copyright}>
-            © {year} {SITE.name}.{" "}
-            <span className={styles.ownerNote}>[Registered legal entity name to be added]</span>
-          </p>
-        )}
+      {/* Inner wrapper so the divider line lines up with the content, not the container padding. */}
+      <div className="container">
+        <div className={styles.disclaimerWrap}>
+          {/* Compliance spine (5 of 5): "EdFinco is not a lender" — site-wide. */}
+          <p className={styles.disclaimer}>{HOME.footerDisclaimer}</p>
+          {/* Legal name comes from SITE.legalEntity (owner confirmed "EdFinco", 2026-11-10). Owner action
+              still required: any regulatory/disclosure text before launch (docs/homepage-spec.md #1). */}
+          {SITE.legalEntity ? (
+            <p className={styles.copyright}>
+              © {year} {SITE.legalEntity}. All rights reserved.
+            </p>
+          ) : (
+            <p className={styles.copyright}>
+              © {year} {SITE.name}.{" "}
+              <span className={styles.ownerNote}>[Registered legal entity name to be added]</span>
+            </p>
+          )}
+        </div>
       </div>
     </footer>
   );

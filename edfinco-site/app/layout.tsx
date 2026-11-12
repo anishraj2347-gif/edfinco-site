@@ -75,13 +75,6 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={lexend.variable}>
-      <head>
-        {/* Belt-and-braces: if JS is disabled, never let scroll-reveal keep content hidden.
-            (With JS, Reveal adds `.reveal-ready` to <html>; CSS gates the hide rule on it.) */}
-        <noscript>
-          <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
-        </noscript>
-      </head>
       <body>{children}</body>
     </html>
   );

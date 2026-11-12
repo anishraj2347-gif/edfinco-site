@@ -1,86 +1,74 @@
+/* Hero art: cut-out student over slanted brand bands (client reference layout, 2026-11-12). */
 .wrap {
   position: relative;
   width: 100%;
-  max-width: 440px;
+  max-width: 500px;
   margin-inline: auto;
-  /* 4:5 portrait frame — matches the image width/height so there is no layout shift */
-  aspect-ratio: 4 / 5;
+  /* 5:6 frame — matches the SVG viewBox, so nothing shifts while the photo loads */
+  aspect-ratio: 5 / 6;
 }
 
-/* Rounded photo frame with soft shadow */
-.frame {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--r-xl);
-  overflow: hidden;
-  border: 4px solid #fff;
-  box-shadow: var(--shadow-lg);
-}
-.photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Decorative blurred blobs behind the photo */
-.blob {
+.bands {
   position: absolute;
+  inset: 0;
   z-index: 0;
-  border-radius: 50%;
-  filter: blur(36px);
-  opacity: 0.55;
-}
-.blobEmerald {
-  width: 62%;
-  height: 62%;
-  top: -10%;
-  right: -12%;
-  background: var(--emerald-bright); /* decorative emerald blob fill */
-}
-.blobGold {
-  width: 54%;
-  height: 54%;
-  bottom: -12%;
-  left: -14%;
-  background: var(--gold);
-  opacity: 0.5;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-/* Floating fact badges (decorative, mirror the stats band) */
+/* The cut-out stands on the bottom edge of the frame. Centred with auto margins, not a transform:
+   a persistent transform promotes the photo to a composited layer, which looks blurry under
+   fractional Windows display scaling. */
+.photo {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-inline: auto;
+  height: 97%;
+  width: auto;
+  max-width: none;
+  /* soft contact shadow so the figure sits on the bands rather than floating */
+  filter: drop-shadow(0 18px 28px rgba(12, 43, 30, 0.22));
+}
+
+/* Floating fact cards (decorative, mirror the stats band) */
 .badge {
   position: absolute;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   padding: 12px 16px;
   border-radius: var(--r-md);
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: var(--shadow-lg);
   border: 1px solid var(--line);
-  max-width: 190px;
+  max-width: 200px;
 }
 .badgeTop {
-  top: 8%;
-  left: -8%;
+  top: 22%;
+  left: -4%;
 }
 .badgeBottom {
-  bottom: 9%;
-  right: -7%;
+  bottom: 20%;
+  right: -3%;
 }
 .badgeValue {
   font-weight: 800;
-  font-size: 1.15rem;
-  line-height: 1;
+  font-size: 1.3rem;
+  line-height: 1.05;
   color: var(--emerald);
 }
 .badgeBottom .badgeValue {
   color: var(--forest);
+  letter-spacing: 0.04em;
 }
 .badgeLabel {
-  font-size: 0.72rem;
+  font-size: 0.78rem;
+  font-weight: 500;
   line-height: 1.2;
   color: var(--muted);
 }
@@ -90,30 +78,13 @@
     max-width: 150px;
     padding: 9px 12px;
   }
+  .badgeValue {
+    font-size: 1.08rem;
+  }
   .badgeTop {
-    left: -4%;
+    left: 0;
   }
   .badgeBottom {
-    right: -3%;
-  }
-}
-
-/* Motion — gentle float on the decorative badges, drift on the blobs. The photo frame is
-   deliberately NOT animated: a persistent transform promotes it to a composited layer, which
-   gets rasterized (and looks blurry) under fractional display scaling. Keeping it on a static,
-   integer-pixel layer preserves image sharpness. The badges/blobs contain no photo, so they
-   can float freely. All disabled by the global prefers-reduced-motion guard in globals.css. */
-@media (prefers-reduced-motion: no-preference) {
-  .badgeTop {
-    animation: floatBadge 5.5s ease-in-out infinite;
-  }
-  .badgeBottom {
-    animation: floatBadge 6.5s ease-in-out 0.6s infinite;
-  }
-  .blobEmerald {
-    animation: blobDrift 14s ease-in-out infinite;
-  }
-  .blobGold {
-    animation: blobDrift 16s ease-in-out 1s infinite reverse;
+    right: 0;
   }
 }

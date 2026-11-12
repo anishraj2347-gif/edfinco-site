@@ -200,20 +200,14 @@ p {
   color: var(--emerald); /* emerald eyebrow — ~5:1 on cream */
   margin-bottom: var(--s-3);
 }
-/* Short animated emerald accent line that grows in beside the eyebrow
-   (emerald, not gold — a thin stroke on cream must stay legible) */
+/* Short emerald accent line beside the eyebrow (static; the site has no animations, owner
+   request 2026-11-12). Emerald, not gold: a thin stroke on cream must stay legible. */
 .eyebrow::after {
   content: "";
   width: 28px;
   height: 2px;
   border-radius: 2px;
   background: var(--emerald);
-  transform-origin: left center;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .eyebrow::after {
-    animation: accentGrow 0.7s ease both;
-  }
 }
 
 h2.h2,
@@ -253,6 +247,13 @@ h2.h2,
     grid-template-columns: 1fr;
   }
 }
+/* Tablet: a 3-card row becomes 2 columns; let the odd card out span the row instead of
+   sitting alone on the left. */
+@media (min-width: 561px) and (max-width: 900px) {
+  .grid-3 > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
 
 /* Card */
 .card {
@@ -261,6 +262,11 @@ h2.h2,
   border-radius: var(--r-lg);
   padding: var(--s-6);
   box-shadow: var(--shadow-sm);
+}
+@media (max-width: 560px) {
+  .card {
+    padding: var(--s-5);
+  }
 }
 
 /* Badge / notice / chips */
@@ -321,11 +327,18 @@ h2.h2,
   font-family: inherit;
   cursor: pointer;
   border: 2px solid transparent;
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+  transition: box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
   text-decoration: none;
+  text-align: center; /* a label that wraps on a narrow phone stays centred */
 }
 .btn:hover {
   text-decoration: none;
+}
+@media (max-width: 480px) {
+  .btn {
+    padding-inline: 20px;
+    font-size: 0.97rem;
+  }
 }
 .btn-primary {
   /* gold gradient fill with FOREST text (never white on gold) */
@@ -335,8 +348,7 @@ h2.h2,
 }
 .btn-primary:hover {
   background: var(--gold);
-  transform: translateY(-2px);
-  /* soft gold glow on lift */
+  /* soft gold glow (colour + shadow feedback only; no movement) */
   box-shadow: 0 10px 28px rgba(245, 158, 11, 0.45), 0 2px 6px rgba(245, 158, 11, 0.3);
 }
 .btn-secondary {
@@ -346,8 +358,7 @@ h2.h2,
 }
 .btn-secondary:hover {
   border-color: var(--emerald);
-  transform: translateY(-2px);
-  /* emerald glow on lift */
+  /* emerald glow (no movement) */
   box-shadow: 0 8px 20px rgba(15, 118, 110, 0.25);
 }
 .btn-ghost {
@@ -375,90 +386,8 @@ h2.h2,
   flex-shrink: 0;
 }
 
-/* Reveal-on-scroll (progressive enhancement; visible by default if JS/observer off).
-   Pending blocks are only hidden once JS is active: the Reveal component adds `.reveal-ready`
-   to <html> on mount, so if JS fails to hydrate the content stays visible (not stuck at opacity:0).
-   The <noscript> rule in layout.tsx is a belt-and-braces fallback for JS-disabled browsers. */
-.reveal {
-  opacity: 1;
-  transform: none;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .reveal-ready .reveal[data-reveal="pending"] {
-    opacity: 0;
-    transform: translateY(18px);
-  }
-  .reveal[data-reveal="shown"] {
-    opacity: 1;
-    transform: none;
-    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-}
-
-/* ---------------------------- Motion keyframes --------------------------- *
- * All decorative; globally neutralised by the prefers-reduced-motion guard below. */
-@keyframes accentGrow {
-  from {
-    transform: scaleX(0);
-    opacity: 0;
-  }
-  to {
-    transform: scaleX(1);
-    opacity: 1;
-  }
-}
-/* Animated gradient sweep for the highlighted headline word */
-@keyframes gradientShift {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 200% 50%;
-  }
-}
-/* Gentle vertical float for hero art / badges */
-@keyframes floaty {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}
-@keyframes floatBadge {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-9px);
-  }
-}
-/* Slow drift for decorative blurred blobs */
-@keyframes blobDrift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(14px, -18px, 0) scale(1.06);
-  }
-}
-
-/* Gradient-text utility used by the hero accent word */
-.gradText {
-  background: var(--grad-accent-text);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .gradText {
-    animation: gradientShift 6s linear infinite alternate;
-  }
-}
+/* No decorative animation anywhere on the site (owner request 2026-11-12): no scroll reveals,
+   count-ups, floating or pulsing elements. Hover feedback is colour/shadow only. */
 
 @media (prefers-reduced-motion: reduce) {
   html {

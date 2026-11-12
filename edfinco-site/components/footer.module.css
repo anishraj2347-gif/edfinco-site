@@ -2,7 +2,10 @@
   background: var(--grad-forest);
   color: rgba(255, 255, 255, 0.86);
   padding-block: clamp(48px, 7vw, 80px) 32px;
-  margin-top: var(--s-8);
+  /* No top margin: every page's last section already ends with its own padding, and the extra
+     64px left a ~160px empty band above the footer (and a cream stripe under the About page's
+     dark band). The faint line keeps a dark last section visually separate from the footer. */
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .grid {

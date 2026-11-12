@@ -143,3 +143,49 @@ export function IconHeart(props: IconProps) {
     </svg>
   );
 }
+
+export function IconPercent(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M19 5 5 19" />
+      <circle cx="6.5" cy="6.5" r="2.5" />
+      <circle cx="17.5" cy="17.5" r="2.5" />
+    </svg>
+  );
+}
+
+export function IconClock(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3.5 2" />
+    </svg>
+  );
+}
+
+export function IconCap(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M22 9 12 4 2 9l10 5 10-5Z" />
+      <path d="M6 11.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5M22 9v5" />
+    </svg>
+  );
+}
+
+export function IconHome(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M3 11.5 12 4l9 7.5" />
+      <path d="M5.5 10v10h13V10M10 20v-5h4v5" />
+    </svg>
+  );
+}
+
+export function IconCheckCircle(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8 12.2 2.8 2.8L16 9.5" />
+    </svg>
+  );
+}

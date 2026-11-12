@@ -4,7 +4,6 @@ import Link from "next/link";
 import { after, connection } from "next/server";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import Reveal from "@/components/Reveal";
 import { IconArrowRight } from "@/components/Icons";
 import { CONSULT_HREF } from "@/lib/content";
 import { getAllPosts, formatDate } from "@/lib/blog";
@@ -53,7 +52,7 @@ export default async function BlogIndexPage() {
             {posts.length === 0 && <p className={styles.empty}>New articles are on the way.</p>}
 
             {featured && (
-              <Reveal as="article" className={styles.featured}>
+              <article className={styles.featured}>
                 {featured.image && (
                   <Link href={`/blog/${featured.slug}`} className={styles.featuredMedia} tabIndex={-1} aria-hidden="true">
                     <Image
@@ -76,13 +75,13 @@ export default async function BlogIndexPage() {
                     Read the guide <IconArrowRight width={16} height={16} />
                   </Link>
                 </div>
-              </Reveal>
+              </article>
             )}
 
             {rest.length > 0 && (
               <div className={styles.grid}>
-                {rest.map((p, i) => (
-                  <Reveal as="article" key={p.slug} className={`card ${styles.card}`} delay={(i % 3) * 70}>
+                {rest.map((p) => (
+                  <article key={p.slug} className={`card ${styles.card}`}>
                     {p.image && (
                       <Link href={`/blog/${p.slug}`} className={styles.cardMedia} tabIndex={-1} aria-hidden="true">
                         <Image src={p.image} alt="" width={600} height={400} sizes="(max-width: 700px) 100vw, 360px" />
@@ -93,7 +92,7 @@ export default async function BlogIndexPage() {
                       <Link href={`/blog/${p.slug}`}>{p.title}</Link>
                     </h2>
                     <p className={styles.cardDesc}>{p.description}</p>
-                  </Reveal>
+                  </article>
                 ))}
               </div>
             )}

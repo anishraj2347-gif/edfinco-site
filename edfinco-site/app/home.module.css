@@ -1,98 +1,246 @@
 /* =============================== HERO =============================== */
+/* Light hero modelled on the client's reference (change doc 2026-11-12, item 6). */
 .hero {
-  /* forest hero gradient; all hero text is white */
-  background: var(--grad-forest);
-  color: #fff;
+  position: relative;
   overflow: hidden;
+  background:
+    radial-gradient(55% 60% at 82% 38%, rgba(16, 185, 129, 0.12) 0%, rgba(16, 185, 129, 0) 70%),
+    linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
 }
 .heroGrid {
   display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: clamp(24px, 5vw, 64px);
-  align-items: center;
-  padding-block: clamp(40px, 7vw, 84px);
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: clamp(24px, 4vw, 56px);
+  /* the cut-out photo stands on the bottom edge of the grid */
+  align-items: end;
+  padding-top: clamp(32px, 5vw, 64px);
 }
 .heroText {
-  max-width: 640px;
+  max-width: 620px;
+  align-self: center;
+  padding-bottom: clamp(56px, 6vw, 80px);
 }
 .heroTitle {
-  font-size: clamp(2.3rem, 6vw, 4rem);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
   font-weight: 800;
-  margin-top: var(--s-2);
-  color: #fff;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  color: var(--forest);
 }
 .heroAccent {
-  background: var(--grad-accent-text);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .heroAccent {
-    animation: gradientShift 6s linear infinite alternate;
-  }
+  color: var(--emerald); /* ~5.4:1 on white, large text */
 }
 .heroTagline {
-  margin-top: var(--s-4);
-  font-size: clamp(1rem, 1.8vw, 1.22rem);
-  font-weight: 700;
-  color: var(--gold-2);
-}
-.heroSubhead {
-  margin-top: var(--s-4);
-  font-size: clamp(1.05rem, 1.8vw, 1.28rem);
-  color: #fff;
-  font-weight: 500;
-}
-.heroBody {
-  margin-top: var(--s-4);
-  color: rgba(255, 255, 255, 0.8);
-}
-.heroChips {
   margin-top: var(--s-5);
+  font-size: clamp(1.02rem, 1.6vw, 1.18rem);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+  max-width: 560px;
 }
-.heroChips .chip svg {
-  color: var(--emerald);
+.heroLead {
+  margin-top: var(--s-3);
+  color: var(--muted);
+  max-width: 540px;
 }
+/* shared by the hero, advisory and final CTA rows */
 .heroCtas {
   display: flex;
   flex-wrap: wrap;
   gap: var(--s-3);
   margin-top: var(--s-6);
 }
-.notALender {
+/* Phones: full-width buttons, so long labels don't squeeze onto two lines beside the arrow */
+@media (max-width: 480px) {
+  .heroCtas :global(.btn),
+  .centerCta :global(.btn) {
+    width: 100%;
+  }
+}
+
+/* Proof row: destination photos + an offering fact (no customer counts — we have none verified) */
+.heroProof {
   display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  margin-top: var(--s-6);
+}
+.proofFaces {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.proofFace,
+.proofCount {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: var(--shadow-sm);
+}
+.proofFace {
+  object-fit: cover;
+  background: var(--emerald-50);
+}
+.proofFace + .proofFace,
+.proofCount {
+  margin-left: -12px;
+}
+.proofCount {
+  display: inline-grid;
+  place-items: center;
+  background: var(--emerald);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.proofText {
+  font-size: 0.92rem;
+  line-height: 1.35;
+  color: var(--muted);
+}
+.proofText strong {
+  display: block;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.heroArt {
+  display: flex;
+  justify-content: center;
+}
+
+/* Key points strip. It overlaps the bottom of the hero photo, which hides the photo's flat
+   bottom edge. The footnote explains every "*" claim (mandatory while those claims are shown). */
+.highlights {
+  position: relative;
+  z-index: 3;
+  margin-top: -36px;
+  margin-bottom: clamp(32px, 5vw, 56px);
+  padding: var(--s-5) clamp(16px, 3vw, 32px);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+}
+.highlightList {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--s-4);
+}
+.highlight {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.highlightIcon {
+  flex-shrink: 0;
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: var(--emerald-50);
+  color: var(--emerald);
+}
+.highlightsNote {
+  margin-top: var(--s-4);
+  padding-top: var(--s-3);
+  border-top: 1px solid var(--line);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+@media (max-width: 1080px) {
+  .highlightList {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+  }
+  .heroText {
+    max-width: none;
+    padding-bottom: 0;
+  }
+  .heroArt {
+    width: 100%;
+    max-width: 360px;
+    margin-inline: auto;
+  }
+}
+@media (max-width: 720px) {
+  .highlightList {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 460px) {
+  .highlightList {
+    grid-template-columns: 1fr;
+  }
+  .heroProof {
+    gap: var(--s-3);
+  }
+}
+
+/* =============================== INTRO ============================== */
+/* The rest of the client's hero copy, directly under the hero. */
+.intro {
+  background: #fff;
+  padding-block: clamp(44px, 6vw, 76px);
+}
+.introInner {
+  max-width: 860px;
+  text-align: center;
+}
+.introLead {
+  font-size: clamp(1.2rem, 2.3vw, 1.55rem);
+  line-height: 1.45;
+  color: var(--ink);
+}
+.introLead strong {
+  color: var(--forest);
+  font-weight: 700;
+}
+.introBody {
+  margin-top: var(--s-4);
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  color: var(--muted);
+}
+.introClosing {
+  margin-top: var(--s-5);
+  font-size: clamp(1.05rem, 1.6vw, 1.2rem);
+  font-weight: 700;
+  color: var(--emerald-700);
+}
+.notALender {
+  display: inline-flex;
   align-items: flex-start;
   gap: 10px;
   margin-top: var(--s-6);
   padding: 14px 18px;
   border-radius: var(--r-md);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: var(--emerald-50);
+  border: 1px solid rgba(15, 118, 110, 0.22);
   font-size: 0.92rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.9);
-  max-width: 560px;
+  color: var(--ink);
+  text-align: left;
+  max-width: 640px;
 }
 .notALender svg {
-  color: var(--gold-2);
+  color: var(--emerald);
   flex-shrink: 0;
   margin-top: 2px;
-}
-.heroArt {
-  display: flex;
-  justify-content: center;
-}
-@media (max-width: 880px) {
-  .heroGrid {
-    grid-template-columns: 1fr;
-  }
-  .heroArt {
-    order: -1;
-    max-width: 320px;
-    margin-inline: auto;
-  }
 }
 
 /* Shared card text */
@@ -109,11 +257,13 @@
 .trust {
   background: #fff;
 }
+/* Same size and spacing as every other section heading (.h2 + .sectionHead) now that this
+   section sits mid-page rather than as a strip under the hero. */
 .trustHeading {
   text-align: center;
-  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+  font-size: clamp(1.7rem, 3.6vw, 2.6rem);
   color: var(--ink);
-  margin-bottom: var(--s-6);
+  margin-bottom: var(--s-7);
 }
 /* image beside the four trust items */
 .trustLayout {
@@ -184,9 +334,10 @@
 }
 .statsRow {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--s-5);
   text-align: center;
+  max-width: 980px;
 }
 .stat {
   display: flex;
@@ -214,18 +365,34 @@
 }
 @media (max-width: 620px) {
   .statsRow {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
+    gap: 0;
   }
-  .stat:nth-child(2) {
+  .stat {
     border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    padding-block: var(--s-4);
+  }
+  .stat:last-child {
+    border-bottom: none;
   }
 }
-.statsNote {
-  margin-top: var(--s-5);
+/* Funding-gap message under the stats (client change doc, item 7) */
+.fundingGap {
+  max-width: 760px;
+  margin: var(--s-6) auto 0;
+  padding-top: var(--s-6);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
   text-align: center;
-  font-size: 0.92rem;
-  color: rgba(255, 255, 255, 0.78);
-  max-width: 640px;
+}
+.fundingGapTitle {
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  color: #fff;
+}
+.fundingGapBody {
+  margin-top: var(--s-3);
+  font-size: clamp(0.98rem, 1.5vw, 1.08rem);
+  color: rgba(255, 255, 255, 0.82);
 }
 
 /* ============================== LENDERS ============================ */
@@ -243,8 +410,18 @@
   border: 1px solid var(--line);
   background: var(--emerald-50);
 }
-.lenderCard .codeBadge,
-.serviceCard .codeBadge {
+/* Section rhythm. Where a section has the same background as the one before it, both paddings
+   used to stack into a ~190px empty band; dropping the top padding leaves one clean gap. */
+@media (min-width: 768px) {
+  /* phones keep both paddings: at 48px each the gap is already modest */
+  .flushTop {
+    padding-top: 0;
+  }
+}
+/* `codeBadge` is a GLOBAL utility class (globals.css). Inside a CSS Module a bare `.codeBadge`
+   is renamed and never matches, which left the icon jammed against the card title. */
+.lenderCard :global(.codeBadge),
+.serviceCard :global(.codeBadge) {
   margin-bottom: var(--s-4);
 }
 .lenderNotice {
@@ -369,6 +546,9 @@
   .steps {
     grid-template-columns: 1fr;
   }
+  .step {
+    padding: var(--s-5);
+  }
 }
 
 /* =========================== COLLATERAL =========================== */
@@ -436,6 +616,12 @@
   height: 100%;
   object-fit: cover;
 }
+/* Phones show one card per row: a landscape photo halves each card's height */
+@media (max-width: 560px) {
+  .destImg {
+    aspect-ratio: 16 / 10;
+  }
+}
 .destName {
   font-size: 1.1rem;
   color: var(--ink);
@@ -447,10 +633,18 @@
   display: grid;
   grid-template-columns: 0.75fr 1.25fr;
   gap: clamp(24px, 4vw, 48px);
-  align-items: center;
+  /* top-aligned: centring the photo against the much taller table left big empty gaps */
+  align-items: start;
 }
 .whyMedia {
   position: relative;
+}
+@media (min-width: 861px) {
+  /* the photo stays in view (below the sticky header) while the table scrolls past */
+  .whyMedia {
+    position: sticky;
+    top: 124px;
+  }
 }
 .whyMedia img {
   width: 100%;
@@ -540,6 +734,15 @@
     white-space: nowrap;
     border: 0;
   }
+  /* label inline, like "On your own:" (as a flex item it was squeezed into its own column) */
+  .compareWith {
+    display: block;
+  }
+  .compareWith svg {
+    display: inline-block;
+    vertical-align: -3px;
+    margin: 0 6px 0 2px;
+  }
   .compareWith::before {
     content: "With EdFinco: ";
     font-weight: 700;
@@ -621,7 +824,8 @@
 .finalCta {
   background: var(--grad-forest);
   border-radius: var(--r-xl);
-  padding: clamp(36px, 6vw, 72px);
+  /* 24px on phones so the full-width CTA label fits on one line */
+  padding: clamp(24px, 6vw, 72px);
   text-align: center;
   color: #fff;
   box-shadow: var(--shadow-lg);

@@ -4,9 +4,6 @@ import Footer from "@/components/Footer";
 import FloatingCta from "@/components/FloatingCta";
 import HeroArt from "@/components/HeroArt";
 import JsonLd from "@/components/JsonLd";
-import Model3D from "@/components/Model3D";
-import Reveal from "@/components/Reveal";
-import CountUp from "@/components/CountUp";
 import { HOME } from "@/lib/content";
 import {
   IconArrowRight,
@@ -21,15 +18,24 @@ import {
   IconShield,
   IconClipboard,
   IconCompass,
+  IconPercent,
+  IconClock,
+  IconCap,
+  IconHome,
+  IconCheckCircle,
 } from "@/components/Icons";
 import styles from "./home.module.css";
 
 const trustIcons = [IconHeart, IconScale, IconLock, IconChat];
 const categoryIcons = [IconBank, IconLayers, IconGlobe];
 const serviceIcons = [IconBank, IconClipboard, IconCompass];
+// One icon per hero highlight, in HOME.hero.highlights order.
+const highlightIcons = [IconPercent, IconClock, IconCap, IconHome, IconCheckCircle];
 
 export default function HomePage() {
   const c = HOME;
+  // Destination photos for the hero proof row (USA, UK, Australia).
+  const proofDestinations = [0, 2, 4].map((i) => c.destinations.items[i]).filter(Boolean);
 
   return (
     <>
@@ -37,89 +43,132 @@ export default function HomePage() {
       <Header />
       <main id="main">
         {/* ---------------------------------------------------------- HERO */}
+        {/* Layout follows the client's reference (change doc 2026-11-12, item 6): light background,
+            big headline, two CTAs and a proof row on the left; a cut-out photo over brand bands on
+            the right; the client's key points (item 4) in a strip underneath. */}
         <section className={styles.hero} aria-labelledby="hero-title">
           <div className={`container ${styles.heroGrid}`}>
             <div className={styles.heroText}>
-              <span className="eyebrow">{c.hero.eyebrow}</span>
               <h1 id="hero-title" className={styles.heroTitle}>
                 {c.hero.headlineLine1}
                 <br />
                 <span className={styles.heroAccent}>{c.hero.headlineLine2}</span>
               </h1>
-              {/* Real client tagline as a sub-line (not the H1) */}
               <p className={styles.heroTagline}>{c.hero.tagline}</p>
-              <p className={styles.heroSubhead}>{c.hero.subhead}</p>
-              <p className={styles.heroBody}>{c.hero.body}</p>
-
-              <ul className={`chips ${styles.heroChips}`}>
-                {c.hero.chips.map((chip) => (
-                  <li key={chip} className="chip">
-                    <IconCheck width={16} height={16} aria-hidden="true" />
-                    {chip}
-                  </li>
-                ))}
-              </ul>
+              <p className={styles.heroLead}>{c.hero.lead}</p>
 
               <div className={styles.heroCtas}>
                 <a href={c.hero.ctaPrimary.href} className="btn btn-primary">
                   {c.hero.ctaPrimary.label}
                   <IconArrowRight width={18} height={18} />
                 </a>
-                <a href={c.hero.ctaSecondary.href} className="btn btn-ghost">
+                <a href={c.hero.ctaSecondary.href} className="btn btn-secondary">
                   {c.hero.ctaSecondary.label}
                 </a>
               </div>
 
-              {/* Compliance spine (1 of 5): not-a-lender badge */}
-              <p className={styles.notALender}>
-                <IconShield width={18} height={18} aria-hidden="true" />
-                <span>{c.hero.notALenderBadge}</span>
-              </p>
+              <div className={styles.heroProof}>
+                <div className={styles.proofFaces} aria-hidden="true">
+                  {proofDestinations.map((dest) => (
+                    <Image
+                      key={dest.name}
+                      src={dest.image.src}
+                      alt=""
+                      width={96}
+                      height={96}
+                      sizes="44px"
+                      className={styles.proofFace}
+                    />
+                  ))}
+                  <span className={styles.proofCount}>{c.hero.proof.value}</span>
+                </div>
+                <p className={styles.proofText}>
+                  <strong>{c.hero.proof.title}</strong> {c.hero.proof.body}
+                </p>
+              </div>
             </div>
 
             <div className={styles.heroArt}>
-              {/* Badge copy sourced from the stats band (offering facts, not outcomes) */}
-              <HeroArt badges={[c.stats[0], c.stats[2]]} />
+              <HeroArt badges={c.hero.badges} />
+            </div>
+          </div>
+
+          {/* Client key points. Claims marked "*" ship with their footnote (lib/content.ts). */}
+          <div className="container">
+            <div className={styles.highlights}>
+              <ul className={styles.highlightList}>
+                {c.hero.highlights.map((text, i) => {
+                  const Icon = highlightIcons[i] ?? IconCheck;
+                  return (
+                    <li key={text} className={styles.highlight}>
+                      <span className={styles.highlightIcon} aria-hidden="true">
+                        <Icon width={22} height={22} />
+                      </span>
+                      <span>{text}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+              <p className={styles.highlightsNote}>{c.hero.highlightsNote}</p>
             </div>
           </div>
         </section>
 
-        {/* ---------------------------------------------------- TRUST STRIP */}
-        <section className={`section ${styles.trust}`} aria-labelledby="trust-title">
+        {/* ---------------------------------------------------------- INTRO */}
+        <section className={styles.intro} aria-label="What EdFinco does">
+          <div className={`container ${styles.introInner}`}>
+            <p className={styles.introLead}>
+              <strong>{c.intro.leadStrong}</strong> {c.intro.leadRest}
+            </p>
+            <p className={styles.introBody}>{c.intro.body}</p>
+            <p className={styles.introClosing}>{c.intro.closing}</p>
+            {/* Compliance spine (1 of 5): not-a-lender badge */}
+            <p className={styles.notALender}>
+              <IconShield width={18} height={18} aria-hidden="true" />
+              <span>{c.intro.notALenderBadge}</span>
+            </p>
+          </div>
+        </section>
+
+        {/* ----------------------------------------------- HOW IT WORKS */}
+        {/* Swapped with the "Honest help" strip (client change doc, item 5). */}
+        <section id="how-it-works" className={`section ${styles.howSection}`} aria-labelledby="how-title">
           <div className="container">
-            <h2 id="trust-title" className={styles.trustHeading}>
-              {c.trust.heading}
-            </h2>
-            <div className={styles.trustLayout}>
-              <Reveal className={styles.trustMedia}>
-                <Image
-                  src="/photos/trust.jpg"
-                  alt="Two people planning together at a table with a laptop and notebook"
-                  width={800}
-                  height={800}
-                  sizes="(max-width: 860px) 360px, 460px"
-                  quality={85}
-                />
-              </Reveal>
-              <div className={styles.trustItems}>
-                {c.trust.items.map((item, i) => {
-                  const Icon = trustIcons[i] ?? IconCheck;
-                  return (
-                    <Reveal
-                      as="article"
-                      key={item.title}
-                      className={`card ${styles.trustCard}`}
-                      delay={i * 80}
-                    >
-                      <span className={styles.trustIcon} aria-hidden="true">
-                        <Icon width={22} height={22} />
-                      </span>
-                      <h3 className={styles.cardTitle}>{item.title}</h3>
-                      <p className={styles.cardBody}>{item.body}</p>
-                    </Reveal>
-                  );
-                })}
-              </div>
+            <div className="sectionHead center">
+              <span className="eyebrow">{c.howItWorks.section.eyebrow}</span>
+              <h2 id="how-title" className="h2">
+                {c.howItWorks.section.heading}
+              </h2>
+              <p className="subhead">{c.howItWorks.section.subhead}</p>
+            </div>
+            <div className={styles.howMedia}>
+              <Image
+                src="/photos/how.jpg"
+                alt="Filling in an application form at a desk beside a laptop"
+                width={1600}
+                height={900}
+                sizes="(max-width: 980px) 100vw, 920px"
+                quality={85}
+              />
+            </div>
+            <ol className={styles.steps}>
+              {c.howItWorks.steps.map((step, i) => (
+                <li key={step.title} className={styles.step}>
+                  <span className={styles.stepNum} aria-hidden="true">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 className={styles.cardTitle}>{step.title}</h3>
+                    <p className={styles.cardBody}>{step.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <div className={styles.centerCta}>
+              <a href={c.howItWorks.cta.href} className="btn btn-primary">
+                {c.howItWorks.cta.label}
+                <IconArrowRight width={18} height={18} />
+              </a>
             </div>
           </div>
         </section>
@@ -129,13 +178,18 @@ export default function HomePage() {
           <div className={`container ${styles.statsRow}`}>
             {c.stats.map((stat) => (
               <div key={stat.label} className={styles.stat}>
-                <CountUp value={stat.value} className={styles.statValue} />
+                <span className={styles.statValue}>{stat.value}</span>
                 <span className={styles.statLabel}>{stat.label}</span>
               </div>
             ))}
           </div>
-          {/* Non-committal funding-gap line (we estimate; the lender decides figures) */}
-          <p className={`container ${styles.statsNote}`}>{c.fundingGapNote}</p>
+          {/* Funding-gap message (client change doc, item 7) */}
+          <div className="container">
+            <div className={styles.fundingGap}>
+              <h2 className={styles.fundingGapTitle}>{c.fundingGap.heading}</h2>
+              <p className={styles.fundingGapBody}>{c.fundingGap.body}</p>
+            </div>
+          </div>
         </section>
 
         {/* ------------------------------------- ONE PLATFORM, MANY LENDERS */}
@@ -148,34 +202,27 @@ export default function HomePage() {
               </h2>
               <p className="subhead">{c.platform.section.subhead}</p>
             </div>
-            <Reveal className={styles.platformMedia}>
-              <Model3D radius="var(--r-xl)">
-                <Image
-                  src="/photos/platform.jpg"
-                  alt="A young man researching and comparing options on his laptop while taking notes"
-                  width={1200}
-                  height={900}
-                  sizes="(max-width: 820px) 100vw, 760px"
-                  quality={85}
-                />
-              </Model3D>
-            </Reveal>
+            <div className={styles.platformMedia}>
+              <Image
+                src="/photos/platform.jpg"
+                alt="A young man researching and comparing options on his laptop while taking notes"
+                width={1200}
+                height={900}
+                sizes="(max-width: 820px) 100vw, 760px"
+                quality={85}
+              />
+            </div>
             <div className="grid grid-3">
               {c.platform.categories.map((cat, i) => {
                 const Icon = categoryIcons[i] ?? IconBank;
                 return (
-                  <Reveal
-                    as="article"
-                    key={cat.name}
-                    className={`card ${styles.lenderCard}`}
-                    delay={i * 80}
-                  >
+                  <article key={cat.name} className={`card ${styles.lenderCard}`}>
                     <span className="codeBadge" aria-hidden="true">
                       <Icon width={24} height={24} />
                     </span>
                     <h3 className={styles.cardTitle}>{cat.name}</h3>
                     <p className={styles.cardBody}>{cat.body}</p>
-                  </Reveal>
+                  </article>
                 );
               })}
             </div>
@@ -191,9 +238,9 @@ export default function HomePage() {
         </section>
 
         {/* --------------------------------------------- ADVISORY CALLOUT */}
-        <section className="section" aria-labelledby="advisory-title">
+        <section className={`section ${styles.flushTop}`} aria-labelledby="advisory-title">
           <div className="container">
-            <Reveal className={styles.advisory}>
+            <div className={styles.advisory}>
               <div className={styles.advisoryGrid}>
                 <div className={styles.advisoryInner}>
                   <span className={styles.advisoryEyebrow}>{c.advisory.eyebrow}</span>
@@ -212,62 +259,52 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className={styles.advisoryMedia}>
-                  <Model3D radius="var(--r-lg)">
-                    <Image
-                      src="/photos/advisor-meeting.jpg"
-                      alt="An advisor walking two young adults through the numbers with a calculator and documents"
-                      width={1200}
-                      height={900}
-                      sizes="(max-width: 820px) 440px, 400px"
-                      quality={85}
-                    />
-                  </Model3D>
+                  <Image
+                    src="/photos/advisor-meeting.jpg"
+                    alt="An advisor walking two young adults through the numbers with a calculator and documents"
+                    width={1200}
+                    height={900}
+                    sizes="(max-width: 820px) 440px, 400px"
+                    quality={85}
+                  />
                 </div>
               </div>
-            </Reveal>
+            </div>
           </div>
         </section>
 
-        {/* ----------------------------------------------- HOW IT WORKS */}
-        <section id="how-it-works" className={`section ${styles.howSection}`} aria-labelledby="how-title">
+        {/* ---------------------------------------------------- TRUST STRIP */}
+        {/* Swapped with "How it works" (client change doc, item 5). */}
+        <section className={`section ${styles.trust}`} aria-labelledby="trust-title">
           <div className="container">
-            <div className="sectionHead center">
-              <span className="eyebrow">{c.howItWorks.section.eyebrow}</span>
-              <h2 id="how-title" className="h2">
-                {c.howItWorks.section.heading}
-              </h2>
-              <p className="subhead">{c.howItWorks.section.subhead}</p>
-            </div>
-            <Reveal className={styles.howMedia}>
-              <Model3D radius="var(--r-xl)">
+            <h2 id="trust-title" className={styles.trustHeading}>
+              {c.trust.heading}
+            </h2>
+            <div className={styles.trustLayout}>
+              <div className={styles.trustMedia}>
                 <Image
-                  src="/photos/how.jpg"
-                  alt="Filling in an application form at a desk beside a laptop"
-                  width={1600}
-                  height={900}
-                  sizes="(max-width: 980px) 100vw, 920px"
+                  src="/photos/trust.jpg"
+                  alt="Two people planning together at a table with a laptop and notebook"
+                  width={800}
+                  height={800}
+                  sizes="(max-width: 860px) 360px, 460px"
                   quality={85}
                 />
-              </Model3D>
-            </Reveal>
-            <ol className={styles.steps}>
-              {c.howItWorks.steps.map((step, i) => (
-                <Reveal as="li" key={step.title} className={styles.step} delay={i * 60}>
-                  <span className={styles.stepNum} aria-hidden="true">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <h3 className={styles.cardTitle}>{step.title}</h3>
-                    <p className={styles.cardBody}>{step.body}</p>
-                  </div>
-                </Reveal>
-              ))}
-            </ol>
-            <div className={styles.centerCta}>
-              <a href={c.howItWorks.cta.href} className="btn btn-primary">
-                {c.howItWorks.cta.label}
-                <IconArrowRight width={18} height={18} />
-              </a>
+              </div>
+              <div className={styles.trustItems}>
+                {c.trust.items.map((item, i) => {
+                  const Icon = trustIcons[i] ?? IconCheck;
+                  return (
+                    <article key={item.title} className={`card ${styles.trustCard}`}>
+                      <span className={styles.trustIcon} aria-hidden="true">
+                        <Icon width={22} height={22} />
+                      </span>
+                      <h3 className={styles.cardTitle}>{item.title}</h3>
+                      <p className={styles.cardBody}>{item.body}</p>
+                    </article>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </section>
@@ -288,18 +325,13 @@ export default function HomePage() {
               {c.helpWith.services.map((service, i) => {
                 const Icon = serviceIcons[i] ?? IconCheck;
                 return (
-                  <Reveal
-                    as="article"
-                    key={service.title}
-                    className={`card ${styles.serviceCard}`}
-                    delay={i * 80}
-                  >
+                  <article key={service.title} className={`card ${styles.serviceCard}`}>
                     <span className="codeBadge" aria-hidden="true">
                       <Icon width={24} height={24} />
                     </span>
                     <h3 className={styles.cardTitle}>{service.title}</h3>
                     <p className={styles.cardBody}>{service.body}</p>
-                  </Reveal>
+                  </article>
                 );
               })}
             </div>
@@ -313,7 +345,7 @@ export default function HomePage() {
         </section>
 
         {/* ----------------------------------------- COLLATERAL EXPLAINER */}
-        <section id="collateral" className="section" aria-labelledby="collateral-title">
+        <section id="collateral" className={`section ${styles.flushTop}`} aria-labelledby="collateral-title">
           <div className="container">
             <div className="sectionHead center">
               <span className="eyebrow">{c.collateral.section.eyebrow}</span>
@@ -323,29 +355,22 @@ export default function HomePage() {
               <p className="subhead">{c.collateral.section.subhead}</p>
             </div>
             <div className={styles.collateralLayout}>
-              <Reveal className={styles.collateralMedia}>
-                <Model3D radius="var(--r-lg)">
-                  <Image
-                    src="/photos/collateral.jpg"
-                    alt="A couple reviewing financial documents together at home"
-                    width={1200}
-                    height={900}
-                    sizes="(max-width: 820px) 100vw, 480px"
-                    quality={85}
-                  />
-                </Model3D>
-              </Reveal>
+              <div className={styles.collateralMedia}>
+                <Image
+                  src="/photos/collateral.jpg"
+                  alt="A couple reviewing financial documents together at home"
+                  width={1200}
+                  height={900}
+                  sizes="(max-width: 820px) 100vw, 480px"
+                  quality={85}
+                />
+              </div>
               <div className={styles.collateralCards}>
-                {c.collateral.cards.map((card, i) => (
-                  <Reveal
-                    as="article"
-                    key={card.title}
-                    className={`card ${styles.collateralCard}`}
-                    delay={i * 90}
-                  >
+                {c.collateral.cards.map((card) => (
+                  <article key={card.title} className={`card ${styles.collateralCard}`}>
                     <h3 className={styles.cardTitle}>{card.title}</h3>
                     <p className={styles.cardBody}>{card.body}</p>
-                  </Reveal>
+                  </article>
                 ))}
               </div>
             </div>
@@ -373,13 +398,8 @@ export default function HomePage() {
               <p className="subhead">{c.destinations.section.subhead}</p>
             </div>
             <div className="grid grid-4">
-              {c.destinations.items.map((dest, i) => (
-                <Reveal
-                  as="article"
-                  key={dest.name}
-                  className={`card ${styles.destCard}`}
-                  delay={(i % 4) * 70}
-                >
+              {c.destinations.items.map((dest) => (
+                <article key={dest.name} className={`card ${styles.destCard}`}>
                   <div className={styles.destImg}>
                     <Image
                       src={dest.image.src}
@@ -391,7 +411,7 @@ export default function HomePage() {
                   </div>
                   <h3 className={styles.destName}>{dest.name}</h3>
                   <p className={styles.cardBody}>{dest.reason}</p>
-                </Reveal>
+                </article>
               ))}
             </div>
             <div className={styles.centerCta}>
@@ -415,18 +435,16 @@ export default function HomePage() {
             </div>
 
             <div className={styles.whyLayout}>
-              <Reveal className={styles.whyMedia}>
-                <Model3D radius="var(--r-lg)">
-                  <Image
-                    src="/photos/why.jpg"
-                    alt="A proud mother congratulating her daughter on graduation day"
-                    width={1000}
-                    height={1000}
-                    sizes="(max-width: 860px) 340px, 400px"
-                    quality={85}
-                  />
-                </Model3D>
-              </Reveal>
+              <div className={styles.whyMedia}>
+                <Image
+                  src="/photos/why.jpg"
+                  alt="A proud mother congratulating her daughter on graduation day"
+                  width={1000}
+                  height={1000}
+                  sizes="(max-width: 860px) 340px, 400px"
+                  quality={85}
+                />
+              </div>
               {/* Real <table> so header↔cell associations survive at every breakpoint (the
                   responsive stacked look is pure CSS). Explicit ARIA roles are kept because the
                   rows are laid out with CSS grid, and changing the display of table elements can
@@ -513,7 +531,7 @@ export default function HomePage() {
         <section className="section" aria-labelledby="final-title">
           <div className="container">
             <div className={styles.finalCta}>
-              <Reveal className={styles.finalMedia}>
+              <div className={styles.finalMedia}>
                 <Image
                   src="/photos/final-cta.jpg"
                   alt="Graduates in gowns throwing their caps in the air"
@@ -522,7 +540,7 @@ export default function HomePage() {
                   sizes="(max-width: 720px) 100vw, 680px"
                   quality={85}
                 />
-              </Reveal>
+              </div>
               <span className={styles.finalEyebrow}>{c.finalCta.eyebrow}</span>
               <h2 id="final-title" className={styles.finalTitle}>
                 {c.finalCta.heading}

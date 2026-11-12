@@ -2,9 +2,12 @@
 // SINGLE SOURCE OF TRUTH for all regulated / claims-sensitive copy on the EdFinco site.
 // Rules (brand/brand.md): EdFinco is NOT a lender. Never say guaranteed / cheaper / faster /
 // instant / best / lowest / named lenders / specific rates / outcome stats / fabricated testimonials.
-// Numbers here describe the OFFERING only (e.g. "8 destinations"), never outcomes.
+// Numbers here describe the OFFERING only (e.g. "12+ destinations"), never outcomes. The one
+// exception is the client-supplied hero highlights (rate / approval time), which always ship with
+// their "*" footnote — see HOME.hero.highlights.
 // Any factual line carries a source comment; unconfirmed values are left as "Owner action required".
-// Copy is lifted verbatim from docs/homepage-spec.md (v1, compliance-approved).
+// Copy is lifted verbatim from docs/homepage-spec.md (v1, compliance-approved), with the client's
+// "Website changes" doc (2026-11-12) applied on top — those lines are marked "Client change doc".
 
 export interface CtaLink {
   label: string;
@@ -101,22 +104,39 @@ export const SEO = {
 // Primary consultation CTA target. A real /consultation route can replace this later.
 export const CONSULT_HREF = "/consultation";
 
+// A floating fact card on the hero photo: optional small line above, big value, optional small line below.
+export interface HeroBadge {
+  pre?: string;
+  value: string;
+  label?: string;
+}
+
 export interface HomeContent {
   announcement: string;
   nav: CtaLink[];
   primaryCta: CtaLink;
 
   hero: {
-    eyebrow: string;
     headlineLine1: string;
     headlineLine2: string;
-    tagline: string; // Real client tagline — sub-line under the H1 (does not replace the H1).
-    subhead: string;
-    body: string;
-    notALenderBadge: string;
-    chips: string[];
+    tagline: string;
+    lead: string;
     ctaPrimary: CtaLink;
     ctaSecondary: CtaLink;
+    badges: HeroBadge[]; // decorative cards on the photo; the same facts are in the stats band
+    // Proof row under the CTAs: destination photos + an offering fact (never a customer count).
+    proof: { value: string; title: string; body: string };
+    highlights: string[]; // client key points; a "*" points to highlightsNote
+    highlightsNote: string; // MANDATORY while any highlight carries "*"
+  };
+
+  // The rest of the client's hero copy, shown directly under the hero.
+  intro: {
+    leadStrong: string;
+    leadRest: string;
+    body: string;
+    closing: string;
+    notALenderBadge: string; // Compliance spine.
   };
 
   trust: {
@@ -125,8 +145,8 @@ export interface HomeContent {
   };
 
   stats: Stat[];
-  // Non-committal funding-gap line shown near the stats (we estimate; the lender decides figures).
-  fundingGapNote: string;
+  // Funding-gap message shown under the stats.
+  fundingGap: { heading: string; body: string };
 
   platform: {
     section: Section;
@@ -197,7 +217,7 @@ export interface HomeContent {
 }
 
 export const HOME: HomeContent = {
-  announcement: `Free, no-obligation guidance for Indian students going abroad. Your Dreams, Funded!`,
+  announcement: `Your Global Education Dreams. Our Financial Guidance.`, // Client change doc, item 1.
 
   // Root-relative anchors (leading `/`) so in-page nav works from any route, e.g. /consultation.
   nav: [
@@ -211,23 +231,47 @@ export const HOME: HomeContent = {
 
   primaryCta: { label: `Book a free consultation`, href: CONSULT_HREF },
 
+  // Client change doc, item 2: new hero copy, used verbatim.
   hero: {
-    eyebrow: `For Indian students going abroad`,
-    headlineLine1: `Study abroad.`,
-    headlineLine2: `Fund it with confidence.`,
-    // Real client tagline (edfinco.com/home). Sub-line only — the H1 above stays the compliant headline.
-    tagline: `Your Dream University. Your Funding Plan. Your Future.`,
-    subhead: `EdFinco helps you find and compare education-loan options across a network of banks, NBFCs and international private lenders. Free guidance. You choose. The lender decides.`,
-    body: `Whether it's a Bachelor's, Master's, MBA or MS, we help you and your family understand your options — before you commit to anything.`,
-    // Compliance spine location 1 of 5.
-    notALenderBadge: `EdFinco is not a lender. We help you compare options and apply — we never approve or fund loans ourselves.`,
-    chips: [
-      `Banks, NBFCs & international lenders in one place`,
-      `Free, no-obligation guidance`,
-      `You stay in control of every decision`,
-    ],
+    headlineLine1: `Thinking of Studying Abroad.`,
+    headlineLine2: `Fund Your Dreams with Confidence.`,
+    tagline: `Your Dream University. The Right Funding Options. A Future Without Financial Guesswork.`,
+    lead: `Planning to study abroad is a big step. Finding the right way to finance it shouldn't feel overwhelming.`,
     ctaPrimary: { label: `Book your free consultation`, href: CONSULT_HREF },
     ctaSecondary: { label: `See how it works`, href: `#how-it-works` },
+    // Client change doc, item 3: the two cards on the hero photo.
+    badges: [
+      { pre: `Choose from`, value: `20+ Lenders` },
+      { value: `ZERO`, label: `Consultation Cost` },
+    ],
+    // Proof row from the client's reference layout (item 6). The reference shows a customer count;
+    // we have no verified customer numbers, so this uses the client's destination fact (item 7).
+    proof: { value: `12+`, title: `Start your journey`, body: `to 12+ study destinations` },
+    // Client change doc, item 4 (replaces the three hero chips). CLIENT-SUPPLIED CLAIMS.
+    // Owner action required: keep evidence on file for the 8.33% rate and the 72-hour approval time
+    // (which lender, which product, as of when) and update or remove them when lender terms change.
+    // ASCI requires claims like these to be substantiated. "upto" corrected to "up to". The "*" on
+    // the 72-hour and 100% lines was added by us: both depend on the lender.
+    highlights: [
+      `Interest Rates as low as 8.33%*`,
+      `Fast Loan Approval in 72 Hours*`,
+      `Financing up to 100% of the Cost of Education*`,
+      `No-Collateral Loan options available`,
+      `No Commitment Loan Process`,
+    ],
+    // MANDATORY while the highlights above carry "*" (also carries the collateral caveat, brand.md).
+    highlightsNote: `*Indicative only. Interest rates, approval times and loan amounts vary by lender and are available only to applicants who meet that lender's criteria. EdFinco is not a lender: the lender decides your rate, amount, approval and any collateral. No collateral does not mean guaranteed approval.`,
+  },
+
+  // Client change doc, item 2 (continued): the rest of the new hero copy, shown directly under the
+  // hero so the hero itself stays as clean as the client's reference (item 6).
+  intro: {
+    leadStrong: `EdFinco helps you explore, compare, and understand Education Loan options`,
+    leadRest: `from a network of Banks, NBFCs, and International private lenders — all in one place.`,
+    body: `Whether you're planning a Bachelor's, Master's, MBA, or MS, we guide you and your family through the available financing options, helping you make a more informed decision before committing to a loan.`,
+    closing: `Free guidance. Multiple lending options. Your choice.`,
+    // Compliance spine location 1 of 5.
+    notALenderBadge: `EdFinco is not a lender. We help you compare options and apply — we never approve or fund loans ourselves.`,
   },
 
   trust: {
@@ -240,16 +284,18 @@ export const HOME: HomeContent = {
     ],
   },
 
-  // Offering facts ONLY — never outcomes. Source: docs/homepage-spec.md §3.
+  // Offering facts ONLY — never outcomes. Client change doc, item 7 (2026-11-12): client-supplied figures.
   stats: [
-    { value: `8`, label: `study destinations` },
-    { value: `3`, label: `lender categories: banks, NBFCs & international lenders` },
-    { value: `₹0`, label: `cost for your consultation` }, // Owner confirmed 2026-11-10: the consultation is free.
-    { value: `100%`, label: `your decision, start to finish` },
+    { value: `12+`, label: `Study Destinations Catered` },
+    { value: `20+`, label: `Banks, NBFCs and International Lenders` },
+    { value: `Zero`, label: `Cost for your Consultation` }, // Owner confirmed 2026-11-10: the consultation is free.
   ],
 
-  // Non-committal funding-gap line (we estimate; the lender decides actual figures). Source: edfinco.com/home.
-  fundingGapNote: `We help you estimate your funding gap — how much you may actually need — so there are no surprises. The lender decides the final figures.`,
+  // Client change doc, item 7: funding-gap message under the stats (an estimate, not a lender figure).
+  fundingGap: {
+    heading: `Know Your Funding Gap Before You Take the Leap!`,
+    body: `Get a clear estimate of how much you need to fund your study-abroad dreams, plan your finances better, and avoid last-minute surprises.`,
+  },
 
   platform: {
     section: {
@@ -330,8 +376,9 @@ export const HOME: HomeContent = {
   destinations: {
     section: {
       eyebrow: `Where to`,
-      heading: `Eight destinations. One starting point.`,
-      subhead: `Wherever you're headed, we help you explore funding options for it.`,
+      // Was "Eight destinations"; the client now offers 12+ (change doc, item 7). The grid shows the most popular.
+      heading: `12+ destinations. One starting point.`,
+      subhead: `Here are some of the most popular. Wherever you're headed, we help you explore funding options for it.`,
     },
     items: [
       { image: { src: `/photos/dest/usa.jpg`, alt: `The Statue of Liberty with the New York skyline` }, name: `USA`, reason: `The widest choice of universities and programs, from MS and MBA to research-driven PhDs.` },
@@ -638,7 +685,8 @@ export const CONSULTATION: ConsultationContent = {
  * ------------------------------------------------------------------ */
 export const NOT_A_LENDER_LINE = `EdFinco is not a lender. We don't approve loans or set interest rates, amounts, fees or collateral requirements — we help you find and compare options, and the lender makes the final decision.`;
 
-// The eight study destinations are an OFFERING fact (never an outcome). Mirrors HOME.destinations.
+// The popular destinations shown on the site (the client covers 12+ in total). An OFFERING fact
+// (never an outcome). Mirrors HOME.destinations.
 export const DESTINATION_NAMES: string[] = HOME.destinations.items.map((d) => d.name);
 
 /* ------------------------------------------------------------------ *
@@ -675,7 +723,7 @@ export interface AboutContent {
   destinations: {
     heading: string;
     subhead: string;
-    names: string[]; // offering fact: 8 destinations
+    names: string[]; // offering fact: the popular destinations shown on the site
   };
   can: {
     heading: string;
@@ -742,8 +790,9 @@ export const ABOUT: AboutContent = {
     ],
   },
   destinations: {
-    heading: `Eight destinations we help with`,
-    subhead: `Wherever you're headed, we help you explore funding options for it.`,
+    // Was "Eight destinations"; the client now offers 12+ (change doc 2026-11-12, item 7).
+    heading: `Popular destinations we help with`,
+    subhead: `We cover 12+ study destinations, including these. Wherever you're headed, we help you explore funding options for it.`,
     names: DESTINATION_NAMES,
   },
   can: {

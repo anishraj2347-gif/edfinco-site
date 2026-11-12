@@ -14,12 +14,11 @@
   color: var(--forest);
   font-weight: 600;
   box-shadow: var(--shadow-lg);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: box-shadow 0.15s ease;
 }
 .fab:hover {
-  transform: translateY(-2px);
   text-decoration: none;
-  /* gold glow on lift */
+  /* gold glow (no movement) */
   box-shadow: 0 28px 70px rgba(245, 158, 11, 0.4);
 }
 .label {
