@@ -46,6 +46,7 @@ function testArticle(topic) {
     body,
     sources: [],
     newTopics: [],
+    changeSummary: "First test draft: a practical checklist on planning the funding gap, documents and questions for lenders.",
   };
 }
 
@@ -61,6 +62,7 @@ function revise(draft, feedback) {
     body: lines.join("\n"),
     sources: draft.sources,
     newTopics: [],
+    changeSummary: `Done. I added a short paragraph before the last section that covers your request: ${String(feedback).replace(/[^ -~]/g, " ").slice(0, 200)}`,
   };
 }
 

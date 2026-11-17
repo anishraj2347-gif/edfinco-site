@@ -15,6 +15,8 @@ export interface Submission {
   body: string;
   sources: string[];
   newTopics: string[];
+  /** The writer's short chat reply to the admin ("what I changed"). Never published. */
+  changeSummary: string;
 }
 
 export interface Checks {
@@ -91,6 +93,7 @@ export function parseSubmission(raw: unknown): { value: Submission | null; error
       body: clean(r.body, 40_000),
       sources: cleanList(r.sources, 12, 400),
       newTopics: cleanList(r.newTopics, 30, 300),
+      changeSummary: clean(r.changeSummary, 600),
     },
     errors: [],
   };

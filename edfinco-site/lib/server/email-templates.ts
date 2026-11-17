@@ -137,7 +137,7 @@ const goLive = (post: PostRow): string => (post.slot_at ? formatIst(post.slot_at
 export function reviewRequestEmail(
   post: PostRow,
   reviewUrl: string,
-  opts: { revision: boolean; feedback: string | null }
+  opts: { revision: boolean; feedback: string | null; writerNote?: string | null }
 ): Rendered {
   const subject = opts.revision
     ? `Updated draft (v${post.version}) for approval: ${post.title}`
@@ -148,13 +148,17 @@ export function reviewRequestEmail(
   const asked = opts.revision && opts.feedback
     ? `<p style="margin:0 0 14px;padding:10px 14px;border-left:4px solid ${C.emerald};background:${C.cream};font-size:14px;line-height:1.5"><strong>You asked:</strong> ${esc(opts.feedback)}</p>`
     : "";
+  const note = opts.writerNote
+    ? `<p style="margin:0 0 14px;padding:10px 14px;border-left:4px solid ${C.forest};background:#f1f5f9;font-size:14px;line-height:1.5"><strong>The writer says:</strong> ${esc(opts.writerNote)}</p>`
+    : "";
   const html = layout(
     `${intro} Goes live ${goLive(post)} if approved.`,
     `<p style="margin:0 0 10px;font-size:16px;line-height:1.6">${esc(intro)}</p>
 ${asked}
+${note}
 <p style="margin:0 0 16px;font-size:15px;line-height:1.6">It goes live on the website <strong>${esc(goLive(post))}</strong>, but only if you approve it. If it isn't approved in time, nothing is published and it moves to the next day.</p>
-<div>${button(`${reviewUrl}#approve`, "Approve")}${button(`${reviewUrl}#changes`, "Request changes", false)}</div>
-<p style="margin:2px 0 18px;font-size:13px;line-height:1.5;color:${C.muted}">Each button opens a secure page for this draft where you confirm with one more click. The link works for this version only.</p>
+<div>${button(reviewUrl, "Open the draft and chat with the writer")}${button(`${reviewUrl}#approve`, "Approve", false)}</div>
+<p style="margin:2px 0 18px;font-size:13px;line-height:1.5;color:${C.muted}">The link opens a secure page with the draft and a chat with the writer: ask for any change in your own words and the new version appears on the same page (each reply takes a few minutes). Approve there when it's right. The link keeps working for every new version of this post for 7 days.</p>
 ${checksHtml(post.checks)}
 ${articleHtml(post)}`
   );
@@ -162,7 +166,9 @@ ${articleHtml(post)}`
 ${opts.revision && opts.feedback ? `\nYou asked: ${opts.feedback}\n` : ""}
 Goes live ${goLive(post)} if approved. If it isn't approved in time, nothing is published and it moves to the next day.
 
-Approve or request changes: ${reviewUrl}
+${opts.writerNote ? `The writer says: ${opts.writerNote}
+
+` : ""}Read the draft, chat with the writer about changes, and approve: ${reviewUrl}
 
 ${post.checks?.warnings.length ? `Please double-check:\n- ${post.checks.warnings.join("\n- ")}\n\n` : ""}---
 ${post.title}
@@ -179,7 +185,7 @@ export function reminderEmail(post: PostRow, reviewUrl: string): Rendered {
   const html = layout(
     `Still waiting for your approval: ${post.title}`,
     `<p style="margin:0 0 12px;font-size:16px;line-height:1.6">Today's post is still waiting for your approval. It goes live at <strong>${esc(when)}</strong> only if you approve it.</p>
-<div>${button(`${reviewUrl}#approve`, "Approve")}${button(`${reviewUrl}#changes`, "Request changes", false)}</div>
+<div>${button(reviewUrl, "Open the draft and chat with the writer")}${button(`${reviewUrl}#approve`, "Approve", false)}</div>
 ${articleHtml(post)}`
   );
   return { subject, html, text: `Still waiting for your approval: ${post.title}\nGoes live at ${when} only if approved.\n\n${reviewUrl}\n` };
@@ -190,7 +196,7 @@ export function missedSlotEmail(post: PostRow, newSlot: Date, reviewUrl: string 
   const html = layout(
     "This post wasn't approved in time, so nothing was published.",
     `<p style="margin:0 0 12px;font-size:16px;line-height:1.6">This post wasn't approved in time, so <strong>nothing was published</strong>. It has moved to the next slot: <strong>${esc(formatIst(newSlot))}</strong>. No extra drafts are written while it waits.</p>
-${reviewUrl ? `<div>${button(`${reviewUrl}#approve`, "Approve")}${button(`${reviewUrl}#changes`, "Request changes", false)}</div>` : `<div>${button(`${config.appUrl}/admin`, "Open the dashboard")}</div>`}`
+${reviewUrl ? `<div>${button(reviewUrl, "Open the draft and chat with the writer")}${button(`${reviewUrl}#approve`, "Approve", false)}</div>` : `<div>${button(`${config.appUrl}/admin`, "Open the dashboard")}</div>`}`
   );
   return { subject, html, text: `Not published: ${post.title}\nMoved to ${formatIst(newSlot)}.\n${reviewUrl ?? `${config.appUrl}/admin`}\n` };
 }

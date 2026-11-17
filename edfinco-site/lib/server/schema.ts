@@ -29,6 +29,22 @@ CREATE TABLE IF NOT EXISTS settings (
 );
 INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 
+-- The Claude writer connection set in /admin/writer: the owner's Claude Code routine (on their own
+-- Claude plan), reached through its API trigger. The token is stored encrypted (AES-256-GCM, key
+-- from SECRETS_KEY or CRON_SECRET) and is never shown again; ROUTINE_FIRE_URL/TOKEN env vars win.
+CREATE TABLE IF NOT EXISTS writer_connection (
+  id               integer PRIMARY KEY CHECK (id = 1),
+  fire_url         text NOT NULL,
+  token_enc        text NOT NULL,
+  token_hint       text NOT NULL,
+  connected_by     text,
+  connected_at     timestamptz NOT NULL DEFAULT now(),
+  last_test_at     timestamptz,
+  last_test_ok     boolean,
+  last_test_detail text,
+  last_test_session text
+);
+
 CREATE TABLE IF NOT EXISTS posts (
   id                     uuid PRIMARY KEY,
   slug                   text UNIQUE,
@@ -70,9 +86,12 @@ CREATE TABLE IF NOT EXISTS post_versions (
   created_at  timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (post_id, version)
 );
+-- The writer's short reply for each version ("what I changed"), shown in the review chat.
+ALTER TABLE post_versions ADD COLUMN IF NOT EXISTS writer_note text;
 
--- Links in approval emails. Each token is bound to ONE version of ONE post; it only works while
--- that version is the latest and still awaiting review. Only hashes are stored.
+-- Links in approval emails. Each token opens the review chat for ONE post (it always shows the
+-- newest version); approving or asking for changes acts only on the version shown on the page,
+-- and only while it is still awaiting review. Only hashes are stored.
 CREATE TABLE IF NOT EXISTS review_tokens (
   token_hash text PRIMARY KEY,
   post_id    uuid    NOT NULL REFERENCES posts(id) ON DELETE CASCADE,

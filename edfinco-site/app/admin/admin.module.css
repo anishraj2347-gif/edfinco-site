@@ -580,3 +580,114 @@
   background: #f1f5f9;
   color: #475569;
 }
+
+/* Review chat (/review/<token>): the draft on the left, a chat with the writer on the right. */
+.chatLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--s-5);
+  align-items: start;
+}
+.chat {
+  position: sticky;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  max-height: calc(100vh - 24px);
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s-4);
+}
+.chatHead .cardTitle {
+  margin-bottom: 4px;
+}
+.chatLog {
+  list-style: none;
+  margin: 0;
+  padding: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  overflow-y: auto;
+  min-height: 120px;
+  flex: 1 1 auto;
+}
+.msgWriter,
+.msgEditor,
+.msgSystem {
+  max-width: 92%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.msgWriter {
+  align-self: flex-start;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 4px;
+}
+.msgEditor {
+  align-self: flex-end;
+  background: var(--emerald);
+  color: var(--white);
+  border-bottom-right-radius: 4px;
+}
+.msgSystem {
+  align-self: center;
+  max-width: 100%;
+  background: transparent;
+  border: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-align: center;
+}
+.msgWho {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-bottom: 2px;
+}
+.msgText {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.msgMeta {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.75;
+  margin-top: 4px;
+}
+.chatForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--line);
+  padding-top: var(--s-3);
+}
+.chatForm .textarea {
+  min-height: 84px;
+}
+.chatApprove {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+@media (max-width: 960px) {
+  .chatLayout {
+    grid-template-columns: 1fr;
+  }
+  .chat {
+    position: static;
+    max-height: none;
+  }
+  .chatLog {
+    max-height: 60vh;
+  }
+}

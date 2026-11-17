@@ -126,6 +126,21 @@ export default async function AdminPostPage({
               </section>
             )}
 
+            {post.version >= 1 && ["pending_review", "revising"].includes(post.status) && (
+              <section className={styles.card}>
+                <h2 className={styles.cardTitle}>Chat with the writer</h2>
+                <p className={styles.small} style={{ marginBottom: 10 }}>
+                  Ask for changes in your own words and see each new version on one page, like the link in the approval email.
+                </p>
+                <form action={`/api/admin/posts/${post.id}`} method="post">
+                  <input type="hidden" name="action" value="chat" />
+                  <button type="submit" className="btn btn-primary" style={{ width: "100%" }}>
+                    Open the chat
+                  </button>
+                </form>
+              </section>
+            )}
+
             {post.status === "pending_review" && (
               <section className={styles.card}>
                 <h2 className={styles.cardTitle}>Request changes</h2>

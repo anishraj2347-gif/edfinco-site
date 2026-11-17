@@ -26,10 +26,16 @@ export async function reviewUrlFor(db: Db, post: PostRow): Promise<string> {
   return `${config.appUrl}/review/${await createReviewToken(db, post)}`;
 }
 
-/** Emails the admins the current version with Approve / Request changes buttons. */
-export async function notifyReview(db: Db, post: PostRow, revision: boolean, feedback: string | null): Promise<void> {
+/** Emails the admins the current version with one link to the review chat (and an Approve shortcut). */
+export async function notifyReview(
+  db: Db,
+  post: PostRow,
+  revision: boolean,
+  feedback: string | null,
+  writerNote: string | null = null
+): Promise<void> {
   const url = await reviewUrlFor(db, post);
-  const sent = await sendToAdmins(reviewRequestEmail(post, url, { revision, feedback }));
+  const sent = await sendToAdmins(reviewRequestEmail(post, url, { revision, feedback, writerNote }));
   await audit(db, "system", sent.ok ? "review_email_sent" : "review_email_failed", post.id, {
     version: post.version,
     ...(sent.error ? { error: sent.error } : {}),
@@ -109,7 +115,7 @@ export async function acceptSubmission(
   if (sub.newTopics.length) await addTopics(db, sub.newTopics);
   await finishJob(db, job.id);
   await audit(db, "writer", "version_submitted", saved.id, { version: saved.version, words: checks.wordCount });
-  await notifyReview(db, saved, post.status === "revising", post.feedback);
+  await notifyReview(db, saved, post.status === "revising", post.feedback, sub.changeSummary || null);
   return { status: 200, body: { ok: true, version: saved.version, warnings: checks.warnings } };
 }
 

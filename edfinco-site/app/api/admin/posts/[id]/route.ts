@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 import { guardAdminPost } from "@/lib/server/admin-guard";
 import { audit } from "@/lib/server/audit";
 import { methodNotAllowed, readForm, seeOther } from "@/lib/server/http";
-import { getPostById, publishNow, reject, unpublish, withdraw } from "@/lib/server/posts";
+import { createReviewToken, getPostById, publishNow, reject, unpublish, withdraw } from "@/lib/server/posts";
 import { approvePost, requestChanges, retryPost } from "@/lib/server/workflow";
 
 export const runtime = "nodejs";
@@ -57,6 +57,13 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       const p = await unpublish(g.db, post.id);
       if (p) await audit(g.db, who, "unpublished", post.id);
       return p ? back("msg=unpublished") : fail("Only a live post can be taken down.");
+    }
+    case "chat": {
+      // Opens the same review chat the approval email links to (a fresh 7-day link for this post).
+      if (post.version < 1) return fail("The writer hasn't sent a version yet.");
+      const token = await createReviewToken(g.db, post);
+      await audit(g.db, who, "review_chat_opened", post.id, { version: post.version });
+      return seeOther(`/review/${encodeURIComponent(token)}`);
     }
     case "retry": {
       const r = await retryPost(g.db, post.id, who);

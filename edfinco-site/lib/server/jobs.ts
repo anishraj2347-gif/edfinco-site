@@ -6,7 +6,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import type { Db } from "./db";
-import { config, writerConfigured } from "./config";
+import { config } from "./config";
+import { fireRoutine, getWriter } from "./writer-connection";
 import { hashToken, newToken, safeEqual, TOKEN_RE, uuid, UUID_RE } from "./crypto";
 
 export type JobKind = "write" | "revise";
@@ -69,8 +70,9 @@ export async function latestJobForPost(db: Db, postId: string): Promise<JobRow |
  */
 export async function fireJob(db: Db, job: JobRow): Promise<{ ok: boolean; error?: string }> {
   if (job.attempts >= MAX_ATTEMPTS) return { ok: false, error: "Too many attempts." };
-  const devMode = !writerConfigured() && !config.isProd;
-  if (!writerConfigured() && !devMode) {
+  const writer = await getWriter(db);
+  const devMode = !writer && !config.isProd;
+  if (!writer && !devMode) {
     await db.query(`UPDATE jobs SET last_error = $2 WHERE id = $1`, [job.id, "Writer not connected yet."]);
     return { ok: false, error: "Writer not connected yet." };
   }
@@ -95,39 +97,18 @@ export async function fireJob(db: Db, job: JobRow): Promise<{ ok: boolean; error
     return { ok: true };
   }
 
-  try {
-    const res = await fetch(config.routineFireUrl, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${config.routineFireToken}`,
-        "anthropic-beta": "experimental-cc-routine-2026-04-01",
-        "anthropic-version": "2023-06-01",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: payload }),
-      signal: AbortSignal.timeout(20_000),
-      cache: "no-store",
-    });
-    if (!res.ok) {
-      const detail = (await res.text().catch(() => "")).slice(0, 300);
-      throw new Error(`Routine trigger returned HTTP ${res.status} ${detail}`);
-    }
-    const data = (await res.json().catch(() => ({}))) as { claude_code_session_url?: unknown };
-    const sessionUrl =
-      typeof data.claude_code_session_url === "string" && data.claude_code_session_url.startsWith("https://claude.ai/")
-        ? data.claude_code_session_url
-        : null;
-    await db.query(`UPDATE jobs SET session_url = $2 WHERE id = $1`, [job.id, sessionUrl]);
+  if (!writer) return { ok: false, error: "Writer not connected yet." }; // unreachable: devMode returned above
+  const fired = await fireRoutine(writer, payload);
+  if (fired.ok) {
+    await db.query(`UPDATE jobs SET session_url = $2 WHERE id = $1`, [job.id, fired.sessionUrl]);
     return { ok: true };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    // Back to queued so the next tick retries (attempts already counted).
-    await db.query(`UPDATE jobs SET status = 'queued', token_hash = NULL, last_error = $2 WHERE id = $1`, [
-      job.id,
-      message.slice(0, 500),
-    ]);
-    return { ok: false, error: message };
   }
+  // Back to queued so the next tick retries (attempts already counted).
+  await db.query(`UPDATE jobs SET status = 'queued', token_hash = NULL, last_error = $2 WHERE id = $1`, [
+    job.id,
+    fired.error.slice(0, 500),
+  ]);
+  return { ok: false, error: fired.error };
 }
 
 /** Authenticates a writer request: job must be fired, unexpired, and the token must match. */

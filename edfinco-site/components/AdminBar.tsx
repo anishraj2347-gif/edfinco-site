@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Staff } from "@/lib/server/staff";
 import styles from "@/app/admin/admin.module.css";
 
-type Section = "leads" | "blog" | "team";
+type Section = "leads" | "blog" | "writer" | "team";
 
 /** Top bar for the admin pages (server component; sign-out is a plain same-origin form POST). */
 export default function AdminBar({ staff, current }: { staff?: Staff | null; current?: Section }) {
@@ -12,6 +12,7 @@ export default function AdminBar({ staff, current }: { staff?: Staff | null; cur
         ...(staff.role === "admin"
           ? [
               { key: "blog" as const, href: "/admin", label: "Blog" },
+              { key: "writer" as const, href: "/admin/writer", label: "Claude writer" },
               { key: "team" as const, href: "/admin/team", label: "Team & access" },
             ]
           : []),

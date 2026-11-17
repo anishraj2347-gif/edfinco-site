@@ -3,7 +3,8 @@ import { after, connection } from "next/server";
 import AdminBar from "@/components/AdminBar";
 import StatusBadge from "@/components/StatusBadge";
 import { requireAdmin } from "@/lib/server/auth";
-import { config, emailConfigured, sheetsConfigured, writerConfigured } from "@/lib/server/config";
+import { config, emailConfigured, sheetsConfigured } from "@/lib/server/config";
+import { writerStatus } from "@/lib/server/writer-connection";
 import { getDb } from "@/lib/server/db";
 import { recentAudit } from "@/lib/server/audit";
 import { listAdminPosts, pipeline } from "@/lib/server/posts";
@@ -42,6 +43,7 @@ export default async function AdminDashboard({
   const leads = await leadCounts(db);
   const oldestNew = await oldestNewLead(db);
   const team = await staffCounts(db);
+  const writer = await writerStatus(db);
   after(() => maybeTick("dashboard visit"));
 
   const now = new Date();
@@ -66,8 +68,14 @@ export default async function AdminDashboard({
     },
     {
       label: "Claude writer (Pro plan routine)",
-      ok: writerConfigured() || local,
-      detail: writerConfigured() ? "connected" : local ? "local test mode (scripts/dev-worker.mjs)" : "not connected (ROUTINE_FIRE_URL / TOKEN)",
+      ok: writer.connected || local,
+      detail: writer.connected
+        ? `connected${writer.source === "env" ? " (server settings)" : ""}`
+        : writer.needsReconnect
+          ? "saved connection can't be read any more: reconnect it on the Claude writer page"
+          : local
+            ? "local test mode (scripts/dev-worker.mjs); connect a routine on the Claude writer page"
+            : "not connected: open the Claude writer page to connect it",
     },
     {
       label: "Scheduler secret",
@@ -210,6 +218,11 @@ export default async function AdminDashboard({
                 </span>
               </li>
             </ul>
+            <p style={{ marginTop: 12 }}>
+              <Link href="/admin/writer" className={`btn ${writer.connected ? styles.btnGhost : "btn-primary"} ${styles.btnSm}`}>
+                {writer.connected ? "Manage the Claude writer" : "Connect the Claude writer"}
+              </Link>
+            </p>
           </section>
         </div>
 

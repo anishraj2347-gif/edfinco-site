@@ -67,7 +67,11 @@ SUBMIT a JSON object with exactly these keys:
   "tags": string[],
   "body": string,          // the Markdown article, ending with the exact final disclaimer line
   "sources": string[],     // https:// URLs, may be empty only if the post makes no factual claims
-  "newTopics": string[]    // ONLY when the job asks for new topics, otherwise []
+  "newTopics": string[],   // ONLY when the job asks for new topics, otherwise []
+  "changeSummary": string  // your chat reply to the admin, 1 to 3 plain sentences (max 600 characters).
+                           // Revision: say exactly what you changed, and if you could not make a requested
+                           // change because it would break a rule, say which part and why.
+                           // First draft: one sentence on the angle you took.
 }
 The website validates it. A 422 response lists "errors": fix every one and submit again.
 "warnings" in a successful response are shown to the human reviewer; you don't need to act on them.

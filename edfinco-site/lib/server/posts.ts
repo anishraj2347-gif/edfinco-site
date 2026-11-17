@@ -36,7 +36,10 @@ export interface PostRow {
 export interface VersionRow {
   version: number;
   title: string;
+  /** The admin's change request that produced this version (null for version 1). */
   feedback: string | null;
+  /** The writer's reply for this version ("what I changed"), shown in the review chat. */
+  writer_note: string | null;
   checks: Checks | null;
   created_at: Date;
 }
@@ -132,7 +135,7 @@ export async function existingTitles(db: Db): Promise<string[]> {
 
 export function versionsOf(db: Db, id: string): Promise<VersionRow[]> {
   return db.query<VersionRow>(
-    `SELECT version, title, feedback, checks, created_at FROM post_versions WHERE post_id = $1 ORDER BY version DESC`,
+    `SELECT version, title, feedback, writer_note, checks, created_at FROM post_versions WHERE post_id = $1 ORDER BY version DESC`,
     [id]
   );
 }
@@ -209,8 +212,8 @@ export async function saveVersion(
   );
   if (!updated) return null;
   await db.query(
-    `INSERT INTO post_versions (post_id, version, title, description, tags, body, sources, feedback, checks)
-     VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7::jsonb, $8, $9::jsonb)
+    `INSERT INTO post_versions (post_id, version, title, description, tags, body, sources, feedback, checks, writer_note)
+     VALUES ($1, $2, $3, $4, $5::jsonb, $6, $7::jsonb, $8, $9::jsonb, $10)
      ON CONFLICT (post_id, version) DO NOTHING`,
     [
       updated.id,
@@ -222,14 +225,16 @@ export async function saveVersion(
       JSON.stringify(sub.sources),
       post.status === "revising" ? post.feedback : null,
       JSON.stringify(checks),
+      sub.changeSummary || null,
     ]
   );
   return updated;
 }
 
 /**
- * A link for approval emails, bound to the post's CURRENT version. Valid 7 days. Actions through it
- * need that exact version to still be pending review; afterwards it only shows the outcome.
+ * A link for approval emails: opens the review chat for this post, valid 7 days. The page always
+ * shows the newest version, and every action through it names the version on screen, which must
+ * still be the newest and pending review (so nobody approves a version they haven't seen).
  */
 export async function createReviewToken(db: Db, post: PostRow): Promise<string> {
   const token = newToken();
