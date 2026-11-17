@@ -290,8 +290,8 @@ export default function HomePage() {
             <div className={styles.trustLayout}>
               <div className={styles.trustMedia}>
                 <Image
-                  src="/photos/trust.jpg"
-                  alt="A mother and her daughter reading a book together on the sofa"
+                  src="/photos/trust-welcome.jpg"
+                  alt="A smiling young woman with a clipboard, sitting in a bright, modern lounge"
                   width={800}
                   height={800}
                   sizes="(max-width: 860px) 360px, 460px"
@@ -365,7 +365,7 @@ export default function HomePage() {
               <div className={styles.collateralMedia}>
                 <Image
                   src="/photos/collateral.jpg"
-                  alt="A smiling mother, father and daughter standing together outdoors"
+                  alt="A model house and a set of keys resting on a property document"
                   width={1200}
                   height={900}
                   sizes="(max-width: 820px) 100vw, 480px"
@@ -446,8 +446,8 @@ export default function HomePage() {
             <div className={styles.whyCard}>
               <div className={styles.whyMedia}>
                 <Image
-                  src="/photos/why-graduate.jpg"
-                  alt="A smiling graduate in her gown and hood, resting her chin on her hand"
+                  src="/photos/why-student.jpg"
+                  alt="A smiling graduate in his gown, raising his cap outside his university"
                   fill
                   sizes="(max-width: 860px) 100vw, 680px"
                   quality={85}

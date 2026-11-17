@@ -30,7 +30,11 @@ ALWAYS:
   boxes back to sections or pages; copy that explains the business may still say it in its own words.
 - Photos: no visible religious markers (hijab, turban, bindi, sacred threads, religious text or institution
   names) and modest clothing (no sleeveless/low-cut tops). The client flagged both on 2026-11-17. Real
-  names or text on documents in a photo get blurred.
+  names or text on documents in a photo get blurred. Also (user, 2026-11-17): no children, everyone
+  pictured looks 22+, people look like real students/families (not glamour or model shoots), and brand
+  logos are blurred or removed. Replacing a photo that stays at the same URL can show the old picture for
+  hours (Next 16 caches optimized images for 4 h), so give a new photo a new filename unless a blog post
+  links to the old path (`lib/blog-images.ts`).
 - "No collateral does not mean guaranteed approval" wherever collateral-free is mentioned.
 - On any Maya content: "Maya is fictional"; on any AI-made media: "Created using AI".
 - Leave owner-action items as visible `{/* Owner action required: ... */}` comments (legal entity name,

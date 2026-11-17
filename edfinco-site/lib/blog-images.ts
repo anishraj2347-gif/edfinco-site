@@ -7,7 +7,7 @@ export interface BlogImage {
 }
 
 export const BLOG_IMAGES: BlogImage[] = [
-  { src: "/photos/collateral.jpg", alt: "A smiling mother, father and daughter standing together outdoors" },
+  { src: "/photos/collateral.jpg", alt: "A model house and a set of keys resting on a property document" },
   { src: "/photos/how.jpg", alt: "An application form on a clipboard beside a laptop" },
   {
     src: "/photos/consult-family.jpg",

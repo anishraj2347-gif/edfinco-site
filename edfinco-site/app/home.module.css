@@ -648,8 +648,8 @@
 }
 .whyImg {
   object-fit: cover;
-  /* public/photos/why-graduate.jpg: her face and hood stay in frame in the tall panel */
-  object-position: 50% 30%;
+  /* public/photos/why-student.jpg: his face and raised cap stay in frame in the tall panel */
+  object-position: 68% 30%;
 }
 /* inside the card the table drops its own card styling */
 .whyCard .compare {

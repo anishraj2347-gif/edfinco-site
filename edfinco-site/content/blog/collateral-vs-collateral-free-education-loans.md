@@ -5,7 +5,7 @@ date: "2026-11-10"
 author: "EdFinco Team"
 tags: ["Education loans", "Collateral", "Co-borrowers", "Parents"]
 image: "/photos/collateral.jpg"
-imageAlt: "A smiling mother, father and daughter standing together outdoors"
+imageAlt: "A model house and a set of keys resting on a property document"
 status: "published"
 ---
 

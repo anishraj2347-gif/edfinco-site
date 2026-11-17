@@ -269,7 +269,7 @@ export const HOME: HomeContent = {
     closing: `Free guidance. Multiple lending options. Your choice.`,
     // Client change doc, item 8 (2026-11-17): a photo that matches this text.
     image: {
-      src: `/photos/intro.jpg`,
+      src: `/photos/intro-students.jpg`,
       alt: `Two students sitting on a bench, comparing options together on a laptop`,
     },
   },

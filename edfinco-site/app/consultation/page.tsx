@@ -46,8 +46,8 @@ export default async function ConsultationPage() {
             </div>
             <div className={styles.heroMedia}>
               <Image
-                src="/photos/consult-call.jpg"
-                alt="A young woman smiling and waving on a video call at her desk"
+                src="/photos/consult-online.jpg"
+                alt="A young woman wearing headphones, working on her laptop by an office window"
                 width={960}
                 height={1200}
                 sizes="(max-width: 900px) 0px, 380px"

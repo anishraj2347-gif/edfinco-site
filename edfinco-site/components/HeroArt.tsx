@@ -39,7 +39,7 @@ export default function HeroArt({ badges = [] }: { badges?: HeroBadge[] }) {
       </svg>
 
       <Image
-        src="/photos/hero-cutout.webp"
+        src="/photos/hero-student.webp"
         alt="A smiling student with a backpack and books"
         width={1000}
         height={1437}
