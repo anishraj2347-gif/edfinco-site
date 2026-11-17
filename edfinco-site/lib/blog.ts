@@ -8,6 +8,7 @@ import { getDb } from "@/lib/server/db";
 import { getLiveBySlug, listLive, type PostRow } from "@/lib/server/posts";
 import { istDate } from "@/lib/server/schedule";
 import { parseBlocks, readingMinutes, type Block } from "@/lib/markdown";
+import { siteImageAlt } from "@/lib/blog-images";
 
 export type { Block };
 
@@ -37,7 +38,7 @@ function toMeta(p: PostRow): PostMeta {
     author: "EdFinco Team",
     tags: p.tags,
     image: image.startsWith("/") && !image.startsWith("//") ? image : undefined,
-    imageAlt: p.image_alt ?? "",
+    imageAlt: siteImageAlt(image) ?? p.image_alt ?? "",
     readingMinutes: readingMinutes(p.body),
   };
 }

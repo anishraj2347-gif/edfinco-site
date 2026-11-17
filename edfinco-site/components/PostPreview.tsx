@@ -1,5 +1,6 @@
 import Image from "next/image";
 import BlogMarkdown from "@/components/BlogMarkdown";
+import { siteImageAlt } from "@/lib/blog-images";
 import { parseBlocks } from "@/lib/markdown";
 import type { Checks } from "@/lib/server/post-checks";
 import type { PostRow } from "@/lib/server/posts";
@@ -11,7 +12,13 @@ export function PostPreview({ post }: { post: PostRow }) {
     <article className={styles.preview} aria-label="Draft preview">
       {post.image && (
         <div className={styles.previewImg}>
-          <Image src={post.image} alt={post.image_alt ?? ""} width={1200} height={800} sizes="(max-width: 960px) 100vw, 760px" />
+          <Image
+            src={post.image}
+            alt={siteImageAlt(post.image) ?? post.image_alt ?? ""}
+            width={1200}
+            height={800}
+            sizes="(max-width: 960px) 100vw, 760px"
+          />
         </div>
       )}
       <span className={styles.eyebrow}>{post.tags[0] ?? "Guide"}</span>

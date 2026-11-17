@@ -25,6 +25,12 @@ NEVER write, in copy or code:
 
 ALWAYS:
 - Keep "EdFinco is not a lender" prominent; lender decides eligibility/amount/pricing/collateral/disbursement.
+  Client decision (2026-11-17): the disclaimer shows in TWO places only, the footnote under the hero key
+  points (`HOME.hero.highlightsNote`) and the site-wide footer. Do not add "not a lender" badges or notice
+  boxes back to sections or pages; copy that explains the business may still say it in its own words.
+- Photos: no visible religious markers (hijab, turban, bindi, sacred threads, religious text or institution
+  names) and modest clothing (no sleeveless/low-cut tops). The client flagged both on 2026-11-17. Real
+  names or text on documents in a photo get blurred.
 - "No collateral does not mean guaranteed approval" wherever collateral-free is mentioned.
 - On any Maya content: "Maya is fictional"; on any AI-made media: "Created using AI".
 - Leave owner-action items as visible `{/* Owner action required: ... */}` comments (legal entity name,
@@ -32,7 +38,7 @@ ALWAYS:
 
 ## 2. Nomadcredit-style structure (the model to match)
 Mirror nomadcredit.com's section rhythm, adapted to EdFinco's compliant copy:
-hero (headline + feature chips + CTA, "not a lender" badge) → trust strip → stats strip (offering facts,
+hero (headline + feature chips + CTA; key points with the "not a lender" footnote) → trust strip → stats strip (offering facts,
 not outcomes) → "lenders, one platform" grid (generic categories, NO names/rates) → advisory callout
 ("Confused? Talk to an advisor — free") → how-it-works 4 steps → collateral explainer → destinations grid →
 "Why EdFinco" comparison table → straight-facts (lender decides) → final CTA. A floating "Book a free

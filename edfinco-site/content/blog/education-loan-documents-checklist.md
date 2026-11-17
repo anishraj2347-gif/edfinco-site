@@ -5,7 +5,7 @@ date: "2026-11-10"
 author: "EdFinco Team"
 tags: ["Education loans", "Documents", "Co-borrowers", "Loan application"]
 image: "/photos/how.jpg"
-imageAlt: "Close-up of a hand filling in a paper application form on a clipboard next to a laptop"
+imageAlt: "An application form on a clipboard beside a laptop"
 status: "published"
 ---
 

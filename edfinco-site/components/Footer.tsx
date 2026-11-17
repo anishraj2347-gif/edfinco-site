@@ -100,7 +100,7 @@ export default function Footer() {
       {/* Inner wrapper so the divider line lines up with the content, not the container padding. */}
       <div className="container">
         <div className={styles.disclaimerWrap}>
-          {/* Compliance spine (5 of 5): "EdFinco is not a lender" — site-wide. */}
+          {/* "EdFinco is not a lender", site-wide: one of the two places it shows (client change doc, item 11). */}
           <p className={styles.disclaimer}>{HOME.footerDisclaimer}</p>
           {/* Legal name comes from SITE.legalEntity (owner confirmed "EdFinco", 2026-11-10). Owner action
               still required: any regulatory/disclosure text before launch (docs/homepage-spec.md #1). */}

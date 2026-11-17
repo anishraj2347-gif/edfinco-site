@@ -28,24 +28,6 @@
   font-size: clamp(1rem, 1.6vw, 1.18rem);
   color: rgba(255, 255, 255, 0.86);
 }
-.notALenderBadge {
-  margin-top: var(--s-5);
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  max-width: 62ch;
-  padding: var(--s-4);
-  border-radius: var(--r-md);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 0.94rem;
-}
-.notALenderBadge svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-  color: var(--gold-2);
-}
 
 /* Alternating light section background. */
 .alt {
@@ -136,11 +118,6 @@
 .markerCant {
   background: #fef2f2;
   color: #b42318; /* AA on the light-red tint */
-}
-
-.notALenderLine {
-  margin-top: var(--s-7);
-  font-size: 0.95rem;
 }
 
 /* CTA band (dark). */

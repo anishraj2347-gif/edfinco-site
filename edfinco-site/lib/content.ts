@@ -130,13 +130,13 @@ export interface HomeContent {
     highlightsNote: string; // MANDATORY while any highlight carries "*"
   };
 
-  // The rest of the client's hero copy, shown directly under the hero.
+  // The rest of the client's hero copy, shown directly under the hero, beside a photo.
   intro: {
     leadStrong: string;
     leadRest: string;
     body: string;
     closing: string;
-    notALenderBadge: string; // Compliance spine.
+    image: { src: string; alt: string };
   };
 
   trust: {
@@ -151,7 +151,6 @@ export interface HomeContent {
   platform: {
     section: Section;
     categories: LenderCategory[];
-    lenderDecidesLine: string; // Mandatory compliance line.
     cta: CtaLink;
   };
 
@@ -192,7 +191,6 @@ export interface HomeContent {
     section: Section;
     columns: { withEdfinco: string; onYourOwn: string };
     rows: CompareRow[];
-    notALenderLine: string; // Compliance spine.
     cta: CtaLink;
   };
 
@@ -208,12 +206,11 @@ export interface HomeContent {
     heading: string;
     subhead: string;
     reassurance: string;
-    notALenderLine: string; // Compliance spine.
     ctaPrimary: CtaLink;
     ctaSecondary: CtaLink;
   };
 
-  footerDisclaimer: string; // Compliance spine (site-wide).
+  footerDisclaimer: string; // "Not a lender" disclaimer (site-wide).
 }
 
 export const HOME: HomeContent = {
@@ -270,8 +267,11 @@ export const HOME: HomeContent = {
     leadRest: `from a network of Banks, NBFCs, and International private lenders — all in one place.`,
     body: `Whether you're planning a Bachelor's, Master's, MBA, or MS, we guide you and your family through the available financing options, helping you make a more informed decision before committing to a loan.`,
     closing: `Free guidance. Multiple lending options. Your choice.`,
-    // Compliance spine location 1 of 5.
-    notALenderBadge: `EdFinco is not a lender. We help you compare options and apply — we never approve or fund loans ourselves.`,
+    // Client change doc, item 8 (2026-11-17): a photo that matches this text.
+    image: {
+      src: `/photos/intro.jpg`,
+      alt: `Two students sitting on a bench, comparing options together on a laptop`,
+    },
   },
 
   trust: {
@@ -300,7 +300,9 @@ export const HOME: HomeContent = {
   platform: {
     section: {
       eyebrow: `One platform`,
-      heading: `Many lenders. One place to compare.`,
+      // Client change doc, item 10 (2026-11-17): the client's wording. The no-break space keeps the
+      // dash on the line before, so a wrapped line never starts with it.
+      heading: `Compare Lending Options from Multiple Banks & NBFCs — Without Leaving Home!`,
       subhead: `Instead of chasing bank after bank on your own, explore options across different kinds of lenders in a single conversation — and see how they compare for your course, country and co-borrower.`,
     },
     categories: [
@@ -308,8 +310,6 @@ export const HOME: HomeContent = {
       { name: `NBFCs`, body: `Non-banking finance companies that focus on education loans, often with different eligibility criteria than banks.` },
       { name: `International private lenders`, body: `Lenders that fund students studying abroad, sometimes without requiring collateral in India — eligibility is still the lender's decision.` },
     ],
-    // MANDATORY compliance line (lender decides).
-    lenderDecidesLine: `Eligibility, sanction amount, interest, fees, collateral requirements and disbursement are all decided by the lender — not by EdFinco.`,
     cta: { label: `Book your free consultation`, href: CONSULT_HREF },
   },
 
@@ -422,8 +422,6 @@ export const HOME: HomeContent = {
         onYourOwn: `Your time, spread across many separate enquiries.`,
       },
     ],
-    // Compliance spine location 3 of 5.
-    notALenderLine: `EdFinco is not a lender. We don't approve loans or set rates — we help you find and compare options, and the lender makes the final decision.`,
     cta: { label: `Book your free consultation`, href: CONSULT_HREF },
   },
 
@@ -472,13 +470,11 @@ export const HOME: HomeContent = {
     heading: `Let's find the right way to fund your study abroad.`,
     subhead: `Book a free consultation. We'll walk you through your options — and you decide what happens next.`,
     reassurance: `Free · No obligation · You stay in control`,
-    // Compliance spine location 4 of 5.
-    notALenderLine: `EdFinco is not a lender. We help Indian students and their families find and compare education-loan options across banks, NBFCs and international private lenders.`,
     ctaPrimary: { label: `Book your free consultation`, href: CONSULT_HREF },
     ctaSecondary: { label: `Explore destinations`, href: `#destinations` },
   },
 
-  // Compliance spine location 5 of 5 (site-wide footer).
+  // "Not a lender" disclaimer, site-wide footer (1 of the 2 places the client wants it; the other is hero.highlightsNote).
   // Legal name confirmed ("EdFinco", 2026-11-10). Owner action still required: any regulatory/disclosure
   // text (e.g. DSA / lender-commission disclosure) for a lawyer to confirm.
   footerDisclaimer: `EdFinco is an education-loan assistance platform (DSA), not a lender. We do not approve loans or set interest rates, amounts, fees or collateral requirements — those are decided by the lender.`,
@@ -510,8 +506,6 @@ export interface ConsultationContent {
     heading: string; // page <h1>
     subhead: string;
     reassurance: string;
-    // Compliance spine: "EdFinco is not a lender".
-    notALenderBadge: string;
   };
   expectations: {
     heading: string;
@@ -572,8 +566,6 @@ export interface ConsultationContent {
       generic: string;
     };
   };
-  // Compliance spine near the form.
-  notALenderLine: string;
 }
 
 // Option lists shared by the form (client) and the API (server) so validation
@@ -599,8 +591,6 @@ export const CONSULTATION: ConsultationContent = {
     heading: `Book your free consultation`,
     subhead: `Tell us a little about your study-abroad plans and we'll help you understand and compare your education-loan options across banks, NBFCs and international private lenders.`,
     reassurance: `Free · No obligation · You choose, the lender decides`,
-    // Compliance spine (consultation page).
-    notALenderBadge: `EdFinco is not a lender. We help you compare options and apply — we never approve or fund loans ourselves.`,
   },
   expectations: {
     heading: `What to expect`,
@@ -675,15 +665,15 @@ export const CONSULTATION: ConsultationContent = {
       generic: `Please check the highlighted fields and try again.`,
     },
   },
-  // Compliance spine near the form.
-  notALenderLine: `EdFinco is not a lender. We don't approve loans or set rates, amounts, fees or collateral requirements — we help you find and compare options, and the lender makes the final decision.`,
 };
 
 /* ------------------------------------------------------------------ *
- * SHARED COMPLIANCE LINE — "EdFinco is not a lender" (brand/brand.md).
- * Reused on the About + legal pages so the spine wording stays identical.
+ * "EdFinco is not a lender" — WHERE IT SHOWS (client change doc, item 11, 2026-11-17).
+ * The client asked for the disclaimer in two places only: the footnote under the hero key
+ * points (HOME.hero.highlightsNote) and the site-wide footer (HOME.footerDisclaimer). Do not
+ * add the repeated badges/notice boxes back. Page copy that explains the business (About
+ * "Who we are", the FAQ, the legal pages' text) still says it in its own words.
  * ------------------------------------------------------------------ */
-export const NOT_A_LENDER_LINE = `EdFinco is not a lender. We don't approve loans or set interest rates, amounts, fees or collateral requirements — we help you find and compare options, and the lender makes the final decision.`;
 
 // The popular destinations shown on the site (the client covers 12+ in total). An OFFERING fact
 // (never an outcome). Mirrors HOME.destinations.
@@ -708,8 +698,6 @@ export interface AboutContent {
     eyebrow: string;
     heading: string; // page <h1>
     subhead: string;
-    // Compliance spine (hero).
-    notALenderBadge: string;
   };
   who: {
     heading: string;
@@ -733,8 +721,6 @@ export interface AboutContent {
     heading: string;
     items: string[];
   };
-  // Compliance spine near the close.
-  notALenderLine: string;
   cta: {
     heading: string;
     body: string;
@@ -753,8 +739,6 @@ export const ABOUT: AboutContent = {
     eyebrow: `About EdFinco`,
     heading: `Honest help for funding your study abroad.`,
     subhead: `EdFinco is an education-loan assistance platform for Indian students and families planning to study abroad. We help you find and compare options — you choose, the lender decides.`,
-    // Compliance spine (hero).
-    notALenderBadge: `EdFinco is not a lender. We help you compare options and apply — we never approve or fund loans ourselves.`,
   },
   who: {
     heading: `Who we are`,
@@ -813,8 +797,6 @@ export const ABOUT: AboutContent = {
       `No collateral does not mean guaranteed approval — lenders still assess your course, university, co-borrower and their own rules.`,
     ],
   },
-  // Compliance spine near the close.
-  notALenderLine: NOT_A_LENDER_LINE,
   cta: {
     heading: `Have questions about your options?`,
     body: `Book a free, no-obligation consultation. We'll walk you through your options — and you decide what happens next.`,
@@ -846,8 +828,6 @@ export interface LegalPageContent {
   ownerNotice: string;
   lastUpdatedNote: string;
   sections: LegalSection[];
-  // Compliance spine.
-  notALenderLine: string;
 }
 
 const LEGAL_OWNER_NOTICE = `This page is a template placeholder, not legal advice. EdFinco's owner must have it reviewed and completed by a qualified lawyer before this site goes live. Items marked "Owner action required" are placeholders to be filled in.`;
@@ -937,7 +917,6 @@ export const PRIVACY: LegalPageContent = {
       ],
     },
   ],
-  notALenderLine: NOT_A_LENDER_LINE,
 };
 
 export const TERMS: LegalPageContent = {
@@ -1011,7 +990,6 @@ export const TERMS: LegalPageContent = {
       ],
     },
   ],
-  notALenderLine: NOT_A_LENDER_LINE,
 };
 
 export const DISCLAIMER: LegalPageContent = {
@@ -1070,5 +1048,4 @@ export const DISCLAIMER: LegalPageContent = {
       ],
     },
   ],
-  notALenderLine: NOT_A_LENDER_LINE,
 };

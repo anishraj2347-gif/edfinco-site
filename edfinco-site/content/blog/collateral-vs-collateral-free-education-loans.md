@@ -5,7 +5,7 @@ date: "2026-11-10"
 author: "EdFinco Team"
 tags: ["Education loans", "Collateral", "Co-borrowers", "Parents"]
 image: "/photos/collateral.jpg"
-imageAlt: "Two young adults sit at a table looking thoughtfully at printed paperwork beside a laptop"
+imageAlt: "A smiling mother, father and daughter standing together outdoors"
 status: "published"
 ---
 

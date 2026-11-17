@@ -5,7 +5,7 @@ date: "2026-11-10"
 author: "EdFinco Team"
 tags: ["Education loans", "Budgeting", "Funding gap", "Study abroad costs"]
 image: "/photos/consult-family.jpg"
-imageAlt: "A man works through figures with a calculator and notebook at home as a smiling woman rests a hand on his shoulder"
+imageAlt: "Two students working through a book and a laptop together in a library"
 status: "published"
 ---
 

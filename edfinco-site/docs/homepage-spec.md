@@ -118,7 +118,9 @@ source note; unconfirmed values stay as `Owner action required`. Brand rules: `.
 `EdFinco is an education-loan assistance platform (DSA), not a lender. We do not approve loans or set interest rates, amounts, fees or collateral requirements — those are decided by the lender.` <!-- Legal entity name RESOLVED 2026-11-10: "EdFinco" (footer copyright). Owner action still required: any regulatory/disclosure text. -->
 
 ## Compliance spine (keep all)
-- "EdFinco is not a lender" appears in: hero badge, platform section, why-section footer, final CTA, footer.
+- "EdFinco is not a lender" appears in: the footnote under the hero key points, and the site-wide footer.
+  (Client change doc 2026-11-17, item 11: the client asked to keep only these two; the badges/notices in the
+  intro, platform section, why-section, final CTA, About, Consultation and legal pages were removed.)
 - Collateral caveat mandatory in §7, echoed in FAQ Q3.
 - NEVER: guaranteed / cheaper / faster / instant / best / lowest / named lenders / rates / outcome stats / testimonials.
 - One `<h1>` (hero). All else `<h2>`/`<h3>`.

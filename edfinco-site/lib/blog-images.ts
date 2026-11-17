@@ -7,11 +7,11 @@ export interface BlogImage {
 }
 
 export const BLOG_IMAGES: BlogImage[] = [
-  { src: "/photos/collateral.jpg", alt: "A couple reviewing financial documents together at home" },
-  { src: "/photos/how.jpg", alt: "Filling in an application form at a desk beside a laptop" },
+  { src: "/photos/collateral.jpg", alt: "A smiling mother, father and daughter standing together outdoors" },
+  { src: "/photos/how.jpg", alt: "An application form on a clipboard beside a laptop" },
   {
     src: "/photos/consult-family.jpg",
-    alt: "A couple smiling while planning together at home with a laptop and notebook",
+    alt: "Two students working through a book and a laptop together in a library",
   },
   {
     src: "/photos/advisor-meeting.jpg",
@@ -23,6 +23,16 @@ export const BLOG_IMAGES: BlogImage[] = [
   },
   { src: "/photos/final-cta.jpg", alt: "Graduates in gowns throwing their caps in the air" },
 ];
+
+/**
+ * The current alt text for one of the site's own photos, or undefined for any other image.
+ * Posts store the alt text they were written with, but a photo file can later be swapped for a
+ * new picture under the same name (client change doc, 2026-11-17), so the stored text could
+ * describe the old picture. Callers prefer this over the stored value.
+ */
+export function siteImageAlt(src: string | null | undefined): string | undefined {
+  return src ? BLOG_IMAGES.find((img) => img.src === src)?.alt : undefined;
+}
 
 /** The image used least recently, so consecutive posts don't repeat a header. */
 export function pickImage(recentSrcs: string[]): BlogImage {

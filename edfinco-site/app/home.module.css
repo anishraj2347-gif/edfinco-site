@@ -193,14 +193,39 @@
 }
 
 /* =============================== INTRO ============================== */
-/* The rest of the client's hero copy, directly under the hero. */
+/* The rest of the client's hero copy, directly under the hero. A photo sits beside the text
+   (client change doc, item 8): photo left / text right on wide screens, photo on top on phones. */
 .intro {
   background: #fff;
   padding-block: clamp(44px, 6vw, 76px);
 }
-.introInner {
-  max-width: 860px;
-  text-align: center;
+.introGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(28px, 5vw, 64px);
+  align-items: center;
+}
+.introMedia img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--line);
+  background: var(--emerald-50);
+}
+@media (max-width: 860px) {
+  .introGrid {
+    grid-template-columns: 1fr;
+  }
+  .introMedia {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+  .introText {
+    text-align: center;
+  }
 }
 .introLead {
   font-size: clamp(1.2rem, 2.3vw, 1.55rem);
@@ -221,26 +246,6 @@
   font-size: clamp(1.05rem, 1.6vw, 1.2rem);
   font-weight: 700;
   color: var(--emerald-700);
-}
-.notALender {
-  display: inline-flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: var(--s-6);
-  padding: 14px 18px;
-  border-radius: var(--r-md);
-  background: var(--emerald-50);
-  border: 1px solid rgba(15, 118, 110, 0.22);
-  font-size: 0.92rem;
-  font-weight: 500;
-  color: var(--ink);
-  text-align: left;
-  max-width: 640px;
-}
-.notALender svg {
-  color: var(--emerald);
-  flex-shrink: 0;
-  margin-top: 2px;
 }
 
 /* Shared card text */
@@ -423,10 +428,6 @@
 .lenderCard :global(.codeBadge),
 .serviceCard :global(.codeBadge) {
   margin-bottom: var(--s-4);
-}
-.lenderNotice {
-  margin-top: var(--s-6);
-  font-weight: 500;
 }
 .centerCta {
   display: flex;
@@ -647,8 +648,8 @@
 }
 .whyImg {
   object-fit: cover;
-  /* public/photos/why-portrait.jpg: keeps the graduate (full cap) + her mother's hand centred */
-  object-position: 56% 50%;
+  /* public/photos/why-portrait.jpg: the graduate's cap, face and certificate stay in frame */
+  object-position: 50% 30%;
 }
 /* inside the card the table drops its own card styling */
 .whyCard .compare {
@@ -877,13 +878,4 @@
   margin-top: var(--s-5);
   font-weight: 600;
   color: var(--gold-2);
-}
-.finalNotALender {
-  margin-top: var(--s-5);
-  padding-top: var(--s-5);
-  border-top: 1px solid rgba(255, 255, 255, 0.16);
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.66);
-  max-width: 680px;
-  margin-inline: auto;
 }

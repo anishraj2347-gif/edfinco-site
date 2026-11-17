@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ConsultationForm from "@/components/ConsultationForm";
-import { IconCheck, IconShield } from "@/components/Icons";
+import { IconCheck } from "@/components/Icons";
 import { CONSULTATION } from "@/lib/content";
 import styles from "./consultation.module.css";
 
@@ -43,11 +43,6 @@ export default async function ConsultationPage() {
             </h1>
             <p className={styles.subhead}>{c.hero.subhead}</p>
             <p className={styles.reassurance}>{c.hero.reassurance}</p>
-            {/* Compliance spine: EdFinco is not a lender */}
-            <p className={styles.notALender}>
-              <IconShield width={18} height={18} aria-hidden="true" />
-              <span>{c.hero.notALenderBadge}</span>
-            </p>
             </div>
             <div className={styles.heroMedia}>
               <Image
@@ -71,7 +66,7 @@ export default async function ConsultationPage() {
               <div className={styles.sidebarMedia}>
                 <Image
                   src="/photos/consult-family.jpg"
-                  alt="A couple smiling while planning together at home with a laptop and notebook"
+                  alt="Two students working through a book and a laptop together in a library"
                   width={1200}
                   height={800}
                   sizes="(max-width: 860px) 100vw, 420px"
@@ -94,8 +89,6 @@ export default async function ConsultationPage() {
                   </li>
                 ))}
               </ul>
-              {/* Compliance spine near the form */}
-              <p className={`notice ${styles.sidebarNotice}`}>{c.notALenderLine}</p>
             </aside>
 
             {/* The lead form */}

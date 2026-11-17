@@ -54,9 +54,6 @@ export default function LegalPageView({ page }: { page: LegalPageContent }) {
                 )}
               </section>
             ))}
-
-            {/* Compliance spine: EdFinco is not a lender. */}
-            <p className={`notice ${styles.notALender}`}>{page.notALenderLine}</p>
           </div>
         </section>
       </main>

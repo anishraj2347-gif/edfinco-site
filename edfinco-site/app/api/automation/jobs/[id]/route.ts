@@ -1,6 +1,7 @@
 // Writer API — the Claude routine fetches its job here (Bearer = the per-job token from the fire
 // payload). Returns the writing rules, the task and the context; never anything else.
 import type { NextRequest } from "next/server";
+import { siteImageAlt } from "@/lib/blog-images";
 import { config } from "@/lib/server/config";
 import { getDb } from "@/lib/server/db";
 import { bearer, json, methodNotAllowed } from "@/lib/server/http";
@@ -29,7 +30,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     kind: job.kind,
     publishDate: istDate(post.slot_at ?? new Date()),
     topic: post.topic,
-    image: post.image ? { src: post.image, alt: post.image_alt ?? "" } : null,
+    image: post.image ? { src: post.image, alt: siteImageAlt(post.image) ?? post.image_alt ?? "" } : null,
     existingTitles: (await existingTitles(db)).filter((t) => t !== post.title),
     proposeNewTopics: !revise && (await openTopicCount(db)) < 5,
     feedback: revise ? post.feedback : null,

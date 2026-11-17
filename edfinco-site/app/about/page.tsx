@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { connection } from "next/server";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { IconArrowRight, IconCheck, IconX, IconShield } from "@/components/Icons";
+import { IconArrowRight, IconCheck, IconX } from "@/components/Icons";
 import { ABOUT } from "@/lib/content";
 import styles from "./about.module.css";
 
@@ -38,11 +38,6 @@ export default async function AboutPage() {
               {a.hero.heading}
             </h1>
             <p className={styles.heroSubhead}>{a.hero.subhead}</p>
-            {/* Compliance spine: EdFinco is not a lender */}
-            <p className={styles.notALenderBadge}>
-              <IconShield width={18} height={18} aria-hidden="true" />
-              <span>{a.hero.notALenderBadge}</span>
-            </p>
           </div>
         </section>
 
@@ -138,8 +133,6 @@ export default async function AboutPage() {
                 </ul>
               </div>
             </div>
-            {/* Compliance spine near the close. */}
-            <p className={`notice ${styles.notALenderLine}`}>{a.notALenderLine}</p>
           </div>
         </section>
 

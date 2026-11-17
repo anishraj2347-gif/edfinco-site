@@ -15,7 +15,6 @@ import {
   IconBank,
   IconLayers,
   IconGlobe,
-  IconShield,
   IconClipboard,
   IconCompass,
   IconPercent,
@@ -115,18 +114,27 @@ export default function HomePage() {
         </section>
 
         {/* ---------------------------------------------------------- INTRO */}
+        {/* Photo added beside the text (client change doc 2026-11-17, item 8). The "not a lender"
+            badge that sat here was removed (item 11): it now shows only in the hero footnote and footer. */}
         <section className={styles.intro} aria-label="What EdFinco does">
-          <div className={`container ${styles.introInner}`}>
-            <p className={styles.introLead}>
-              <strong>{c.intro.leadStrong}</strong> {c.intro.leadRest}
-            </p>
-            <p className={styles.introBody}>{c.intro.body}</p>
-            <p className={styles.introClosing}>{c.intro.closing}</p>
-            {/* Compliance spine (1 of 5): not-a-lender badge */}
-            <p className={styles.notALender}>
-              <IconShield width={18} height={18} aria-hidden="true" />
-              <span>{c.intro.notALenderBadge}</span>
-            </p>
+          <div className={`container ${styles.introGrid}`}>
+            <div className={styles.introMedia}>
+              <Image
+                src={c.intro.image.src}
+                alt={c.intro.image.alt}
+                width={1200}
+                height={800}
+                sizes="(max-width: 860px) 100vw, 520px"
+                quality={85}
+              />
+            </div>
+            <div className={styles.introText}>
+              <p className={styles.introLead}>
+                <strong>{c.intro.leadStrong}</strong> {c.intro.leadRest}
+              </p>
+              <p className={styles.introBody}>{c.intro.body}</p>
+              <p className={styles.introClosing}>{c.intro.closing}</p>
+            </div>
           </div>
         </section>
 
@@ -142,9 +150,10 @@ export default function HomePage() {
               <p className="subhead">{c.howItWorks.section.subhead}</p>
             </div>
             <div className={styles.howMedia}>
+              {/* how.jpg (the clipboard) stays as the documents-checklist blog image. */}
               <Image
-                src="/photos/how.jpg"
-                alt="Filling in an application form at a desk beside a laptop"
+                src="/photos/how-planning.jpg"
+                alt="A student at her desk working through her notes and printed charts, with a laptop beside her"
                 width={1600}
                 height={900}
                 sizes="(max-width: 980px) 100vw, 920px"
@@ -226,8 +235,6 @@ export default function HomePage() {
                 );
               })}
             </div>
-            {/* Mandatory compliance line: lender decides */}
-            <p className={`notice ${styles.lenderNotice}`}>{c.platform.lenderDecidesLine}</p>
             <div className={styles.centerCta}>
               <a href={c.platform.cta.href} className="btn btn-primary">
                 {c.platform.cta.label}
@@ -284,7 +291,7 @@ export default function HomePage() {
               <div className={styles.trustMedia}>
                 <Image
                   src="/photos/trust.jpg"
-                  alt="Two people planning together at a table with a laptop and notebook"
+                  alt="A mother and her daughter reading a book together on the sofa"
                   width={800}
                   height={800}
                   sizes="(max-width: 860px) 360px, 460px"
@@ -358,7 +365,7 @@ export default function HomePage() {
               <div className={styles.collateralMedia}>
                 <Image
                   src="/photos/collateral.jpg"
-                  alt="A couple reviewing financial documents together at home"
+                  alt="A smiling mother, father and daughter standing together outdoors"
                   width={1200}
                   height={900}
                   sizes="(max-width: 820px) 100vw, 480px"
@@ -440,7 +447,7 @@ export default function HomePage() {
               <div className={styles.whyMedia}>
                 <Image
                   src="/photos/why-portrait.jpg"
-                  alt="A proud mother congratulating her daughter on graduation day"
+                  alt="A smiling graduate in her cap and gown holding her degree certificate"
                   fill
                   sizes="(max-width: 860px) 100vw, 680px"
                   quality={85}
@@ -487,8 +494,6 @@ export default function HomePage() {
               </table>
             </div>
 
-            {/* Compliance spine (3 of 5) */}
-            <p className={`notice ${styles.lenderNotice}`}>{c.why.notALenderLine}</p>
             <div className={styles.centerCta}>
               <a href={c.why.cta.href} className="btn btn-primary">
                 {c.why.cta.label}
@@ -558,8 +563,6 @@ export default function HomePage() {
                 </a>
               </div>
               <p className={styles.finalReassurance}>{c.finalCta.reassurance}</p>
-              {/* Compliance spine (4 of 5) */}
-              <p className={styles.finalNotALender}>{c.finalCta.notALenderLine}</p>
             </div>
           </div>
         </section>
