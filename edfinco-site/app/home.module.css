@@ -648,7 +648,7 @@
 }
 .whyImg {
   object-fit: cover;
-  /* public/photos/why-portrait.jpg: the graduate's cap, face and certificate stay in frame */
+  /* public/photos/why-graduate.jpg: her face and hood stay in frame in the tall panel */
   object-position: 50% 30%;
 }
 /* inside the card the table drops its own card styling */
@@ -667,7 +667,7 @@
     aspect-ratio: 16 / 10;
   }
   .whyImg {
-    object-position: 50% 12%;
+    object-position: 50% 27%;
   }
 }
 .compare {

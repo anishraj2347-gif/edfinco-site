@@ -446,8 +446,8 @@ export default function HomePage() {
             <div className={styles.whyCard}>
               <div className={styles.whyMedia}>
                 <Image
-                  src="/photos/why-portrait.jpg"
-                  alt="A smiling graduate in her cap and gown holding her degree certificate"
+                  src="/photos/why-graduate.jpg"
+                  alt="A smiling graduate in her gown and hood, resting her chin on her hand"
                   fill
                   sizes="(max-width: 860px) 100vw, 680px"
                   quality={85}

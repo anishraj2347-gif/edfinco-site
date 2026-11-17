@@ -26,7 +26,7 @@ EdFinco customers and must never be captioned as testimonials or outcomes.
 | consult-call.jpg | https://www.pexels.com/photo/8837777/ |
 | consult-family.jpg | https://www.pexels.com/photo/9159064/ (replaced 2026-11-17, client change doc item 12) |
 | hero-cutout.webp | https://www.pexels.com/photo/7616706/ (same photo as hero.jpg; background removed locally with the open-source ISNet model, 2026-11-12) |
-| why-portrait.jpg | https://www.pexels.com/photo/13771314/ (top crop; the name on the certificate is blurred; replaced 2026-11-17, client change doc item 12) |
+| why-graduate.jpg | https://www.pexels.com/photo/32041555/ (cropped above the wrist so a black cord bracelet is out of frame; added 2026-11-17, replaces why-portrait.jpg at the user's request) |
 | intro.jpg | https://www.pexels.com/photo/15598638/ (added 2026-11-17, client change doc item 8) |
 
 Photo rules (client, 2026-11-17): no visible religious markers (hijab, turban, bindi, sacred threads,
