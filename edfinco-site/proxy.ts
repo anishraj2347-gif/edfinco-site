@@ -11,6 +11,12 @@ import type { NextRequest } from "next/server";
 export function proxy(request: NextRequest) {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const isDev = process.env.NODE_ENV === "development";
+  // Only ask the browser to upgrade subresources when the page itself was served over HTTPS
+  // (directly or behind a TLS-terminating proxy). On plain HTTP (e.g. http://<ip>:3000) the
+  // directive rewrites every CSS/JS URL to https:// on a port with no TLS, so nothing loads.
+  const isHttps =
+    request.nextUrl.protocol === "https:" ||
+    request.headers.get("x-forwarded-proto")?.split(",")[0].trim() === "https";
 
   const csp = [
     `default-src 'self'`,
@@ -24,7 +30,7 @@ export function proxy(request: NextRequest) {
     `base-uri 'self'`,
     `form-action 'self'`,
     `frame-ancestors 'none'`,
-    `upgrade-insecure-requests`,
+    ...(isHttps ? [`upgrade-insecure-requests`] : []),
   ].join("; ");
 
   const requestHeaders = new Headers(request.headers);
