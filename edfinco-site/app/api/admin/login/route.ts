@@ -24,7 +24,9 @@ export async function POST(request: NextRequest): Promise<Response> {
   const ip = clientIp(request);
   const okIp = await allow(db, `login-ip:${ip}`, 10, 3600);
   const okEmail = await allow(db, `login-email:${email}`, 5, 3600);
-  if (!okIp || !okEmail) return seeOther("/admin/login?error=rate");
+  // Site-wide cap so a forged IP header can't turn this into an email cannon (Resend quota).
+  const okAll = await allow(db, "login-global", 60, 3600);
+  if (!okIp || !okEmail || !okAll) return seeOther("/admin/login?error=rate");
 
   if (await staffFor(db, email)) {
     const token = await createLoginToken(db, email);

@@ -46,6 +46,8 @@ export async function POST(request: NextRequest): Promise<Response> {
   if (!plan) return json({ ok: false, error: "Please check your details and try again." }, 422);
 
   const db = await getDb();
+  // Site-wide cap (shared with step 1): see app/api/consultation/start/route.ts.
+  if (!(await allow(db, "consult-global", 100, 3600))) return json({ ok: false, error: "rate_limited" }, 429);
   const okIp = await allow(db, `consult-ip:${hashToken(clientIp(request)).slice(0, 32)}`, 6, 3600);
   if (!okIp) return json({ ok: false, error: "rate_limited" }, 429);
 

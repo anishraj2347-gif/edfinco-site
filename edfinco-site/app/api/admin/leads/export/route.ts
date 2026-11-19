@@ -1,4 +1,4 @@
-// CSV export of consultation requests (current filter) for Excel / Google Sheets. Signed-in staff
+// CSV export of consultation requests (current filter) for Excel / Google Sheets. Admins
 // only; every export is recorded in the activity log. Cells that a spreadsheet would treat as a
 // formula (=, +, -, @) are neutralised (CSV injection).
 import type { NextRequest } from "next/server";
@@ -43,6 +43,7 @@ const COLUMNS: [string, (l: LeadRow, ppl: Map<string, Person>) => string][] = [
 export async function GET(request: NextRequest): Promise<Response> {
   const staff = await getStaff();
   if (!staff) return json({ ok: false, error: "Sign in first." }, 401);
+  if (staff.role !== "admin") return json({ ok: false, error: "Admins only." }, 403);
   const sp = request.nextUrl.searchParams;
   const filter = { status: sp.get("status") ?? "open", q: sp.get("q") ?? "", assigned: sp.get("assigned") ?? "" };
   const db = await getDb();

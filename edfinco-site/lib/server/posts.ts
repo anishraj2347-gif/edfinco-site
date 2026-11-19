@@ -232,7 +232,7 @@ export async function saveVersion(
 }
 
 /**
- * A link for approval emails: opens the review chat for this post, valid 7 days. The page always
+ * A link for approval emails: opens the review chat for this post, valid 3 days. The page always
  * shows the newest version, and every action through it names the version on screen, which must
  * still be the newest and pending review (so nobody approves a version they haven't seen).
  */
@@ -241,7 +241,7 @@ export async function createReviewToken(db: Db, post: PostRow): Promise<string> 
   await db.query(`DELETE FROM review_tokens WHERE expires_at < now()`);
   await db.query(
     `INSERT INTO review_tokens (token_hash, post_id, version, expires_at)
-     VALUES ($1, $2, $3, now() + interval '7 days')`,
+     VALUES ($1, $2, $3, now() + interval '3 days')`,
     [hashToken(token), post.id, post.version]
   );
   return token;

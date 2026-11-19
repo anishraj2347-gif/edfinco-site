@@ -44,7 +44,7 @@ export default async function ReviewPage({
       <div className={styles.loginWrap}>
         <h1 className={styles.pageTitle}>This link has expired</h1>
         <p className={styles.lede}>
-          Review links work for 7 days. Use the most recent email about this post, or sign in to the dashboard.
+          Review links work for 3 days. Use the most recent email about this post, or sign in to the dashboard.
         </p>
         <Link href="/admin" className="btn btn-primary">
           Open the dashboard

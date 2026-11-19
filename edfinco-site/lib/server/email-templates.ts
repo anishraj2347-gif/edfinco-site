@@ -158,7 +158,7 @@ ${asked}
 ${note}
 <p style="margin:0 0 16px;font-size:15px;line-height:1.6">It goes live on the website <strong>${esc(goLive(post))}</strong>, but only if you approve it. If it isn't approved in time, nothing is published and it moves to the next day.</p>
 <div>${button(reviewUrl, "Open the draft and chat with the writer")}${button(`${reviewUrl}#approve`, "Approve", false)}</div>
-<p style="margin:2px 0 18px;font-size:13px;line-height:1.5;color:${C.muted}">The link opens a secure page with the draft and a chat with the writer: ask for any change in your own words and the new version appears on the same page (each reply takes a few minutes). Approve there when it's right. The link keeps working for every new version of this post for 7 days.</p>
+<p style="margin:2px 0 18px;font-size:13px;line-height:1.5;color:${C.muted}">The link opens a secure page with the draft and a chat with the writer: ask for any change in your own words and the new version appears on the same page (each reply takes a few minutes). Approve there when it's right. The link keeps working for every new version of this post for 3 days. Don't forward it: anyone with the link can approve.</p>
 ${checksHtml(post.checks)}
 ${articleHtml(post)}`
   );

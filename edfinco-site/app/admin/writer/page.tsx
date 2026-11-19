@@ -161,7 +161,7 @@ export default async function WriterPage({
                   </p>
                 </form>
               ) : (
-                <p className={styles.flashWarn}>Set SECRETS_KEY (or CRON_SECRET) on the host first, so the token can be stored encrypted.</p>
+                <p className={styles.flashWarn}>Set SECRETS_KEY on the host first, so the token can be stored encrypted.</p>
               )}
             </section>
           )}

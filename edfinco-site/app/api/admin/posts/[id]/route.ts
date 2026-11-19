@@ -59,7 +59,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return p ? back("msg=unpublished") : fail("Only a live post can be taken down.");
     }
     case "chat": {
-      // Opens the same review chat the approval email links to (a fresh 7-day link for this post).
+      // Opens the same review chat the approval email links to (a fresh 3-day link for this post).
       if (post.version < 1) return fail("The writer hasn't sent a version yet.");
       const token = await createReviewToken(g.db, post);
       await audit(g.db, who, "review_chat_opened", post.id, { version: post.version });

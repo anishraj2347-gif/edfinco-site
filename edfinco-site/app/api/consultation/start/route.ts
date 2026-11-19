@@ -28,6 +28,9 @@ export async function POST(request: NextRequest): Promise<Response> {
   if (!contact) return json({ ok: false, error: "Please check your details and try again." }, 422);
 
   const db = await getDb();
+  // Site-wide cap: per-IP limits can be dodged with a forged CF-Connecting-IP / X-Forwarded-For
+  // on the bare onrender.com address, and every request here can email the address it was given.
+  if (!(await allow(db, "consult-global", 100, 3600))) return json({ ok: false, error: "rate_limited" }, 429);
   const okIp = await allow(db, `consult-start-ip:${hashToken(clientIp(request)).slice(0, 32)}`, 10, 3600);
   const okEmail = await allow(db, `consult-start-email:${hashToken(contact.email).slice(0, 32)}`, 6, 86400);
   if (!okIp || !okEmail) return json({ ok: false, error: "rate_limited" }, 429);

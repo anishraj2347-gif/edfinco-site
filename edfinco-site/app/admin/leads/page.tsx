@@ -69,9 +69,11 @@ export default async function LeadsPage({
             </p>
           </div>
           <div className={styles.row}>
-            <a href={exportHref} className={`btn ${styles.btnGhost} ${styles.btnSm}`}>
-              Export CSV
-            </a>
+            {staff.role === "admin" && (
+              <a href={exportHref} className={`btn ${styles.btnGhost} ${styles.btnSm}`}>
+                Export CSV
+              </a>
+            )}
             {staff.role === "admin" && sheetEnabled() && (
               <form action="/api/admin/leads/sync-sheet" method="post">
                 <button type="submit" className={`btn ${styles.btnGhost} ${styles.btnSm}`}>

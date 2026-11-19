@@ -47,11 +47,21 @@ interface Row {
   last_test_session: string | null;
 }
 
+const derive = (secret: string): Buffer => Buffer.from(hkdfSync("sha256", secret, "edfinco", "writer-connection-v1", 32));
+
+/** The key new tokens are encrypted with: SECRETS_KEY only (CRON_SECRET also lives in GitHub Actions). */
 function key(): Buffer | null {
-  const secret = (process.env.SECRETS_KEY ?? "").trim() || config.cronSecret;
-  if (secret.length >= 16) return Buffer.from(hkdfSync("sha256", secret, "edfinco", "writer-connection-v1", 32));
+  const secret = (process.env.SECRETS_KEY ?? "").trim();
+  if (secret.length >= 16) return derive(secret);
   // Local development only: a fixed key so the page works on a laptop without extra setup.
-  return config.isProd ? null : Buffer.from(hkdfSync("sha256", "local-dev-only-key", "edfinco", "writer-connection-v1", 32));
+  return config.isProd ? null : derive("local-dev-only-key");
+}
+
+/** Keys a saved token may be encrypted with: the current one, then the older CRON_SECRET-derived one. */
+function decryptKeys(): Buffer[] {
+  const keys = [key()];
+  if (config.cronSecret.length >= 16) keys.push(derive(config.cronSecret));
+  return keys.filter((k): k is Buffer => k !== null);
 }
 
 function encrypt(plain: string): string | null {
@@ -64,16 +74,18 @@ function encrypt(plain: string): string | null {
 }
 
 function decrypt(box: string): string | null {
-  const k = key();
   const [v, iv, tag, ct] = box.split(".");
-  if (!k || v !== "v1" || !iv || !tag || !ct) return null;
-  try {
-    const d = createDecipheriv("aes-256-gcm", k, Buffer.from(iv, "base64url"));
-    d.setAuthTag(Buffer.from(tag, "base64url"));
-    return Buffer.concat([d.update(Buffer.from(ct, "base64url")), d.final()]).toString("utf8");
-  } catch {
-    return null;
+  if (v !== "v1" || !iv || !tag || !ct) return null;
+  for (const k of decryptKeys()) {
+    try {
+      const d = createDecipheriv("aes-256-gcm", k, Buffer.from(iv, "base64url"));
+      d.setAuthTag(Buffer.from(tag, "base64url"));
+      return Buffer.concat([d.update(Buffer.from(ct, "base64url")), d.final()]).toString("utf8");
+    } catch {
+      /* wrong key: try the next one */
+    }
   }
+  return null;
 }
 
 async function row(db: Db): Promise<Row | null> {
@@ -123,7 +135,7 @@ export async function saveWriter(db: Db, url: string, token: string, by: string)
   }
   if (!TOKEN_OK.test(token)) return "The token doesn't look right. Copy it again from the routine's API trigger.";
   const box = encrypt(token);
-  if (!box) return "The server has no encryption key yet. Set SECRETS_KEY (or CRON_SECRET) on the host first.";
+  if (!box) return "The server has no encryption key yet. Set SECRETS_KEY on the host first.";
   await db.query(
     `INSERT INTO writer_connection (id, fire_url, token_enc, token_hint, connected_by, connected_at)
      VALUES (1, $1, $2, $3, $4, now())

@@ -1,11 +1,28 @@
 {
-  "enabledPlugins": {
-    "plugin-dev@claude-plugins-official": true,
-    "postiz@claude-plugins-official": true,
-    "hyperframes@claude-plugins-official": true,
-    "canva@claude-plugins-official": true,
-    "superpowers@claude-plugins-official": true,
-    "runway-api@claude-plugins-official": true,
-    "adobe-for-creativity@claude-plugins-official": true
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph update --skip-flows",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "code-review-graph status",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }

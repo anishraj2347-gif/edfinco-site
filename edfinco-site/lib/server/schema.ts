@@ -31,7 +31,7 @@ INSERT INTO settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING;
 
 -- The Claude writer connection set in /admin/writer: the owner's Claude Code routine (on their own
 -- Claude plan), reached through its API trigger. The token is stored encrypted (AES-256-GCM, key
--- from SECRETS_KEY or CRON_SECRET) and is never shown again; ROUTINE_FIRE_URL/TOKEN env vars win.
+-- from SECRETS_KEY; older rows may use CRON_SECRET) and is never shown again; ROUTINE_FIRE_URL/TOKEN env vars win.
 CREATE TABLE IF NOT EXISTS writer_connection (
   id               integer PRIMARY KEY CHECK (id = 1),
   fire_url         text NOT NULL,

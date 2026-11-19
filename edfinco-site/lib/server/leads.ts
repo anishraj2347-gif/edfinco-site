@@ -119,6 +119,7 @@ export async function createLead(db: Db, input: LeadInput): Promise<{ lead: Lead
     await db.query<LeadRow>(
       `SELECT ${COLS} FROM leads
        WHERE lower(email) = lower($1) AND phone = $2 AND created_at > now() - interval '30 minutes'
+         AND stage IN ('started', 'partial')
        ORDER BY created_at DESC LIMIT 1`,
       [input.email, input.phone]
     )

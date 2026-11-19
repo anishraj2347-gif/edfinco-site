@@ -36,6 +36,10 @@ services:
       # CRON_SECRET (see .github/workflows/blog-scheduler.yml).
       - key: CRON_SECRET
         generateValue: true
+      # Encrypts the Claude writer token saved in /admin/writer (kept separate from CRON_SECRET,
+      # which also lives in GitHub Actions).
+      - key: SECRETS_KEY
+        generateValue: true
 
 databases:
   - name: edfinco-db
