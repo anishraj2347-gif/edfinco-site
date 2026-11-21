@@ -55,6 +55,8 @@ export const config = {
    * (ADMIN_EMAILS is accepted as an older name for the same setting.)
    */
   mainAdminEmails: emailList("MAIN_ADMIN_EMAILS").length ? emailList("MAIN_ADMIN_EMAILS") : emailList("ADMIN_EMAILS"),
+  /** First-time password for the main admin(s), until they set their own in My details. */
+  adminPassword: env("ADMIN_PASSWORD"),
   resendApiKey: env("RESEND_API_KEY"),
   emailFrom: env("EMAIL_FROM") || "EdFinco <onboarding@resend.dev>",
   /** Claude Code routine (runs on the owner's Claude Pro plan) — API trigger "fire" endpoint. */

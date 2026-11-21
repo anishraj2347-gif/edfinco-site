@@ -26,7 +26,7 @@ npm run dev            # http://localhost:3000
 No accounts are needed locally: an embedded database lives in `.data/pglite`, emails are saved to
 `.data/outbox/`, the Google Sheet is written to `.data/sheets/*.csv`, and
 `node scripts/dev-worker.mjs` plays the Claude writer. Create `.env.local` from `.env.example` and set
-at least `MAIN_ADMIN_EMAILS` (any address; the sign-in link appears in `.data/outbox/`) and
+at least `MAIN_ADMIN_EMAILS` (any address), `ADMIN_PASSWORD` (10+ characters, to sign in) and
 `CRON_SECRET`. `.env.local` and `.data/` are git-ignored.
 
 ```bash

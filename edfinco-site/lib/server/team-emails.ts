@@ -187,7 +187,7 @@ export function accessGrantedEmail(email: string, role: Role): Rendered {
   const html = layout(
     "You've been given access to the EdFinco dashboard.",
     `<p style="margin:0 0 12px;font-size:16px;line-height:1.6">You've been given access to the EdFinco dashboard as <strong>${esc(ROLE_LABEL[role])}</strong>.</p>
-<p style="margin:0 0 14px;font-size:15px;line-height:1.6">To sign in, enter this email address (${esc(email)}) and we'll send you a one-time link. No password needed.</p>
+<p style="margin:0 0 14px;font-size:15px;line-height:1.6">Sign in with this email address (${esc(email)}) and the password the admin who added you gives you. You can change it in My details.</p>
 <div>${button(`${config.appUrl}/admin/login`, "Sign in")}</div>`,
     { header: "EdFinco · Team & access", footerHtml: "You're receiving this because an EdFinco admin gave this address dashboard access." }
   );

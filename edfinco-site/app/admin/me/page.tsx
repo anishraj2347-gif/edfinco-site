@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import AdminBar from "@/components/AdminBar";
-import { requireStaff } from "@/lib/server/auth";
+import { PASSWORD_MIN, requireStaff } from "@/lib/server/auth";
 import { getDb } from "@/lib/server/db";
 import { personFor, ROLE_LABEL } from "@/lib/server/staff";
 import styles from "../admin.module.css";
@@ -16,6 +16,7 @@ export default async function MyDetailsPage({
   const me = await personFor(db, staff.email);
   const q = await searchParams;
   const saved = q.msg === "saved";
+  const pwSaved = q.msg === "password";
   const error = typeof q.error === "string" ? q.error.slice(0, 200) : undefined;
 
   return (
@@ -29,6 +30,7 @@ export default async function MyDetailsPage({
             reach you.
           </p>
           {saved && <p className={styles.flash}>Saved.</p>}
+          {pwSaved && <p className={styles.flash}>Password changed.</p>}
           {error && <p className={styles.flashError}>{error}</p>}
           {!me.name && !saved && <p className={styles.flashWarn}>Please add your name and phone number.</p>}
           <form action="/api/admin/me" method="post" className={`${styles.card} ${styles.form}`}>
@@ -64,6 +66,31 @@ export default async function MyDetailsPage({
             </p>
             <button type="submit" className="btn btn-primary">
               Save my details
+            </button>
+          </form>
+          <form action="/api/admin/me" method="post" className={`${styles.card} ${styles.form}`}>
+            <input type="hidden" name="action" value="password" />
+            <h2 className={styles.cardTitle}>Change password</h2>
+            <div className={styles.field}>
+              <label htmlFor="current" className={styles.label}>
+                Current password
+              </label>
+              <input id="current" name="current" type="password" required maxLength={200} autoComplete="current-password" className={styles.input} />
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="password" className={styles.label}>
+                New password <span className={styles.small}>(at least {PASSWORD_MIN} characters)</span>
+              </label>
+              <input id="password" name="password" type="password" required minLength={PASSWORD_MIN} maxLength={200} autoComplete="new-password" className={styles.input} />
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="confirm" className={styles.label}>
+                New password again
+              </label>
+              <input id="confirm" name="confirm" type="password" required minLength={PASSWORD_MIN} maxLength={200} autoComplete="new-password" className={styles.input} />
+            </div>
+            <button type="submit" className="btn btn-primary">
+              Change password
             </button>
           </form>
         </div>

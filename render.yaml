@@ -32,6 +32,9 @@ services:
       # The main admin's email address; asked for when the Blueprint is first applied.
       - key: MAIN_ADMIN_EMAILS
         sync: false
+      # The main admin's first password (10+ characters); asked for when the Blueprint is first applied.
+      - key: ADMIN_PASSWORD
+        sync: false
       # Shared secret for the hourly blog scheduler. Copy it into the GitHub Actions secret
       # CRON_SECRET (see .github/workflows/blog-scheduler.yml).
       - key: CRON_SECRET

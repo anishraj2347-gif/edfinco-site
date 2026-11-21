@@ -1,13 +1,9 @@
-// Sends a one-time sign-in link to a staff email (admin or team). Same response whether or not the
-// address has access (no account discovery); rate-limited per IP and per address.
-import type { NextRequest } from "next/server";
-import { config } from "@/lib/server/config";
-import { staffFor } from "@/lib/server/staff";
-import { createLoginToken } from "@/lib/server/auth";
+// Email + password sign-in for staff (admin or team). One error message for every failure (no
+// account discovery); rate-limited per IP and per address.
+import { NextResponse, type NextRequest } from "next/server";
 import { audit } from "@/lib/server/audit";
+import { checkLogin, createSession, sessionCookie } from "@/lib/server/auth";
 import { getDb } from "@/lib/server/db";
-import { sendEmail } from "@/lib/server/email";
-import { loginLinkEmail } from "@/lib/server/email-templates";
 import { clientIp, isSameOrigin, json, methodNotAllowed, readForm, seeOther } from "@/lib/server/http";
 import { allow } from "@/lib/server/rate-limit";
 
@@ -18,23 +14,23 @@ export async function POST(request: NextRequest): Promise<Response> {
   if (!isSameOrigin(request)) return json({ ok: false, error: "Forbidden." }, 403);
   const form = await readForm(request, 2_000);
   const email = (form?.get("email") ?? "").trim().toLowerCase().slice(0, 254);
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return seeOther("/admin/login?error=email");
+  const password = (form?.get("password") ?? "").slice(0, 200);
 
   const db = await getDb();
-  const ip = clientIp(request);
-  const okIp = await allow(db, `login-ip:${ip}`, 10, 3600);
-  const okEmail = await allow(db, `login-email:${email}`, 5, 3600);
-  // Site-wide cap so a forged IP header can't turn this into an email cannon (Resend quota).
-  const okAll = await allow(db, "login-global", 60, 3600);
-  if (!okIp || !okEmail || !okAll) return seeOther("/admin/login?error=rate");
+  const okIp = await allow(db, `login-ip:${clientIp(request)}`, 20, 3600);
+  const okEmail = await allow(db, `login-email:${email}`, 10, 3600);
+  if (!okIp || !okEmail) return seeOther("/admin/login?error=rate");
 
-  if (await staffFor(db, email)) {
-    const token = await createLoginToken(db, email);
-    const link = `${config.appUrl}/admin/login/verify?token=${encodeURIComponent(token)}`;
-    const sent = await sendEmail({ to: [email], ...loginLinkEmail(link) });
-    await audit(db, email, sent.ok ? "login_link_sent" : "login_link_failed", null, sent.error ? { error: sent.error } : null);
+  const staff = await checkLogin(db, email, password);
+  if (!staff) {
+    await audit(db, email || "(blank)", "sign_in_failed");
+    return seeOther(`/admin/login?error=wrong&email=${encodeURIComponent(email)}`);
   }
-  return seeOther("/admin/login?sent=1");
+  const session = await createSession(db, staff.email);
+  await audit(db, staff.email, "signed_in");
+  const res = new NextResponse(null, { status: 303, headers: { Location: "/admin/leads", "Cache-Control": "no-store" } });
+  res.cookies.set(sessionCookie(session.token, session.expires));
+  return res;
 }
 
 export const GET = () => methodNotAllowed("POST");

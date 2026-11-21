@@ -1,6 +1,6 @@
 // Small crypto helpers. Tokens are 256-bit random values; only their SHA-256 hashes are stored,
 // so a database leak never reveals a usable login, review or worker token.
-import { createHash, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, randomUUID, scryptSync, timingSafeEqual } from "node:crypto";
 
 export function newToken(): string {
   return randomBytes(32).toString("base64url");
@@ -26,3 +26,15 @@ export const uuid = (): string => randomUUID();
 
 export const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 export const TOKEN_RE = /^[A-Za-z0-9_-]{40,64}$/;
+
+/** Password hash for storage: "scrypt$<salt>$<hash>" (salted, slow by design). */
+export function hashPassword(password: string): string {
+  const salt = randomBytes(16).toString("base64url");
+  return `scrypt$${salt}$${scryptSync(password, salt, 64).toString("base64url")}`;
+}
+
+export function verifyPassword(password: string, stored: string): boolean {
+  const [kind, salt, hash] = stored.split("$");
+  if (kind !== "scrypt" || !salt || !hash) return false;
+  return safeEqual(scryptSync(password, salt, 64).toString("base64url"), hash);
+}

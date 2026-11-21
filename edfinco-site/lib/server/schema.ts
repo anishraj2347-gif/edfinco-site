@@ -134,12 +134,14 @@ CREATE TABLE IF NOT EXISTS admin_sessions (
   last_seen_at timestamptz NOT NULL DEFAULT now()
 );
 
-CREATE TABLE IF NOT EXISTS login_tokens (
-  token_hash text PRIMARY KEY,
-  email      text NOT NULL,
-  expires_at timestamptz NOT NULL,
-  used_at    timestamptz,
-  created_at timestamptz NOT NULL DEFAULT now()
+-- Old one-time email sign-in links (replaced by passwords).
+DROP TABLE IF EXISTS login_tokens;
+
+-- Dashboard passwords (scrypt hashes only). A main admin with no row signs in with ADMIN_PASSWORD.
+CREATE TABLE IF NOT EXISTS staff_passwords (
+  email      text PRIMARY KEY,
+  hash       text NOT NULL,
+  updated_at timestamptz NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS rate_limits (
@@ -150,7 +152,7 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 
 -- Dashboard users added in /admin/team. The main admin(s) come from MAIN_ADMIN_EMAILS and are not
 -- stored here. Anyone added by a non-main admin stays 'pending' until a main admin approves; only
--- 'active' members can receive a sign-in link.
+-- 'active' members can sign in.
 CREATE TABLE IF NOT EXISTS staff (
   email        text PRIMARY KEY,
   role         text NOT NULL,

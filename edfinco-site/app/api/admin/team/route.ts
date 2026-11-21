@@ -1,8 +1,10 @@
-// Team & access. Any admin can ADD someone (name, email, phone; pending until approved) and switch
+// Team & access. Any admin can ADD someone (name, email, phone, first password; pending until approved) and switch
 // "Gets new requests" on/off. Only a MAIN admin can approve, reject, remove, change roles or edit
 // someone else's details — enforced here and again inside lib/server/staff.ts.
 import type { NextRequest } from "next/server";
 import { guardAdminPost } from "@/lib/server/admin-guard";
+import { audit } from "@/lib/server/audit";
+import { PASSWORD_MIN, setPassword } from "@/lib/server/auth";
 import { sendEmail } from "@/lib/server/email";
 import { methodNotAllowed, readForm, seeOther } from "@/lib/server/http";
 import { sendToMainAdmins } from "@/lib/server/notify";
@@ -25,6 +27,8 @@ export async function POST(request: NextRequest): Promise<Response> {
 
   if (action === "add") {
     if (!(await allow(db, `staff-add:${admin.email}`, 20, 86400))) return fail("Too many additions today. Try again tomorrow.");
+    const password = form?.get("password") ?? "";
+    if (password.length < PASSWORD_MIN || password.length > 200) return fail(`The password must be ${PASSWORD_MIN} to 200 characters.`);
     const r = await addStaff(
       db,
       {
@@ -37,6 +41,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       admin
     );
     if (!r.ok) return fail(r.error);
+    await setPassword(db, r.row.email, password);
     if (r.row.status === "pending") {
       await sendToMainAdmins(accessRequestEmail(await personFor(db, r.row.email), r.row.role, admin.email, r.row.note));
       return ok("requested");
@@ -54,7 +59,15 @@ export async function POST(request: NextRequest): Promise<Response> {
 
   if (action === "details") {
     const r = await setProfile(db, email, { name: form?.get("name") ?? "", phone: form?.get("phone") ?? "" }, admin);
-    return r.ok ? ok("details") : fail(r.error);
+    if (!r.ok) return fail(r.error);
+    const password = form?.get("password") ?? "";
+    if (password) {
+      const err = await setPassword(db, email, password);
+      if (err) return fail(err);
+      await db.query(`DELETE FROM admin_sessions WHERE email = $1`, [email]); // a reset signs them out everywhere
+      await audit(db, admin.email, "password_reset", null, { email });
+    }
+    return ok("details");
   }
   if (action === "approve" || action === "reject") {
     const row = await decideStaff(db, email, action, admin);

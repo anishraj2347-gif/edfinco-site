@@ -3,7 +3,7 @@
 //    approve, reject or remove dashboard users. Can't be removed from the UI (no lock-out).
 //  - Members added in /admin/team: role "admin" (everything) or "team" (consultation requests
 //    only). Added by a non-main admin → 'pending' until a main admin approves. Only 'active'
-//    members can receive a sign-in link; removing someone ends their sessions immediately.
+//    members can sign in; removing someone ends their sessions immediately.
 import type { Db } from "./db";
 import { config } from "./config";
 import { audit } from "./audit";
@@ -167,7 +167,7 @@ export async function removeStaff(db: Db, email: string, by: Staff): Promise<boo
   );
   if (!rows.length) return false;
   await db.query(`DELETE FROM admin_sessions WHERE email = $1`, [e]);
-  await db.query(`DELETE FROM login_tokens WHERE email = $1`, [e]);
+  await db.query(`DELETE FROM staff_passwords WHERE email = $1`, [e]);
   await audit(db, by.email, "staff_removed", null, { email: e });
   return true;
 }

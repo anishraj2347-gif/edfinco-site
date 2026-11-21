@@ -225,14 +225,3 @@ export function writerProblemEmail(post: PostRow, detail: string): Rendered {
   );
   return { subject, html, text: `The writer couldn't finish ${name}: ${detail}\n${config.appUrl}/admin/posts/${post.id}\n` };
 }
-
-export function loginLinkEmail(url: string): Rendered {
-  const subject = "Your EdFinco dashboard sign-in link";
-  const html = layout(
-    "Sign in to the EdFinco dashboard.",
-    `<p style="margin:0 0 14px;font-size:16px;line-height:1.6">Use this link to sign in to the EdFinco dashboard. It works once and expires in 15 minutes.</p>
-<div>${button(url, "Sign in")}</div>
-<p style="margin:8px 0 0;font-size:13px;line-height:1.5;color:${C.muted}">If you didn't ask for this, you can ignore this email. Nobody can sign in without the link.</p>`
-  );
-  return { subject, html, text: `Sign in to the EdFinco dashboard (works once, expires in 15 minutes):\n${url}\n` };
-}

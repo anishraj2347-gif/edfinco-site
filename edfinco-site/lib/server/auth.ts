@@ -1,9 +1,7 @@
-// Admin sign-in with one-time email links (no passwords to leak or forget).
-//  - Only main admins (MAIN_ADMIN_EMAILS) and APPROVED members from /admin/team can receive a link
-//    (pending requests get nothing); everyone gets the same response, so the form can't reveal who
-//    has access.
-//  - Links are 256-bit random, single-use, expire in 15 minutes, and are consumed by an explicit
-//    POST (a mail scanner pre-fetching the URL can't use them up or sign anyone in).
+// Admin sign-in with email + password.
+//  - Only main admins (MAIN_ADMIN_EMAILS) and APPROVED members from /admin/team can sign in.
+//  - Passwords are stored as salted scrypt hashes (staff_passwords). A main admin who hasn't set a
+//    password yet signs in with ADMIN_PASSWORD (server setting), then can change it in My details.
 //  - Sessions: random 256-bit token in an HttpOnly, Secure, SameSite=Lax cookie (__Host- prefixed
 //    in production), only its hash is stored, 7-day lifetime, revoked on sign-out or when the
 //    member is removed (access and role are re-checked against the database on every request).
@@ -13,7 +11,7 @@ import type { Db } from "./db";
 import { getDb } from "./db";
 import { config } from "./config";
 import { staffFor, type Staff } from "./staff";
-import { hashToken, newToken, TOKEN_RE } from "./crypto";
+import { hashPassword, hashToken, newToken, safeEqual, TOKEN_RE, verifyPassword } from "./crypto";
 
 export const SESSION_COOKIE = config.isProd ? "__Host-edfinco_admin" : "edfinco_admin";
 const SESSION_DAYS = 7;
@@ -22,32 +20,32 @@ export type { Staff };
 /** Kept for the blog-automation code: an Admin is a Staff member with the admin role. */
 export type Admin = Staff;
 
-export async function createLoginToken(db: Db, email: string): Promise<string> {
-  const token = newToken();
-  await db.query(
-    `INSERT INTO login_tokens (token_hash, email, expires_at) VALUES ($1, $2, now() + interval '15 minutes')`,
-    [hashToken(token), email.toLowerCase()]
-  );
-  // Housekeeping: drop long-expired tokens and sessions.
-  await db.query(`DELETE FROM login_tokens WHERE expires_at < now() - interval '1 day'`);
-  await db.query(`DELETE FROM admin_sessions WHERE expires_at < now()`);
-  return token;
+export const PASSWORD_MIN = 10;
+
+/** The staff member if this email + password is right (and they still have access), else null. */
+export async function checkLogin(db: Db, email: string, password: string): Promise<Staff | null> {
+  const staff = await staffFor(db, email);
+  if (!staff || !password) return null;
+  const rows = await db.query<{ hash: string }>(`SELECT hash FROM staff_passwords WHERE email = $1`, [staff.email]);
+  if (rows[0]) return verifyPassword(password, rows[0].hash) ? staff : null;
+  // No password stored yet: main admins use ADMIN_PASSWORD; everyone else can't sign in.
+  return staff.isMain && config.adminPassword.length >= PASSWORD_MIN && safeEqual(password, config.adminPassword) ? staff : null;
 }
 
-/** Marks a login token used (once) and returns its email if it is still valid. */
-export async function consumeLoginToken(db: Db, token: string): Promise<string | null> {
-  if (!TOKEN_RE.test(token)) return null;
-  const rows = await db.query<{ email: string }>(
-    `UPDATE login_tokens SET used_at = now()
-     WHERE token_hash = $1 AND used_at IS NULL AND expires_at > now()
-     RETURNING email`,
-    [hashToken(token)]
+/** Sets (or resets) someone's password. Returns an error message, or null when saved. */
+export async function setPassword(db: Db, email: string, password: string): Promise<string | null> {
+  if (password.length < PASSWORD_MIN) return `The password must be at least ${PASSWORD_MIN} characters.`;
+  if (password.length > 200) return "That password is too long.";
+  await db.query(
+    `INSERT INTO staff_passwords (email, hash, updated_at) VALUES ($1, $2, now())
+     ON CONFLICT (email) DO UPDATE SET hash = $2, updated_at = now()`,
+    [email.trim().toLowerCase(), hashPassword(password)]
   );
-  const email = rows[0]?.email ?? null;
-  return email && (await staffFor(db, email)) ? email : null;
+  return null;
 }
 
 export async function createSession(db: Db, email: string): Promise<{ token: string; expires: Date }> {
+  await db.query(`DELETE FROM admin_sessions WHERE expires_at < now()`); // housekeeping
   const token = newToken();
   const expires = new Date(Date.now() + SESSION_DAYS * 24 * 60 * 60 * 1000);
   await db.query(`INSERT INTO admin_sessions (token_hash, email, expires_at) VALUES ($1, $2, $3::timestamptz)`, [

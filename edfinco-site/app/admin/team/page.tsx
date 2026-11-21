@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { connection } from "next/server";
 import AdminBar from "@/components/AdminBar";
-import { requireAdmin } from "@/lib/server/auth";
+import { PASSWORD_MIN, requireAdmin } from "@/lib/server/auth";
 import { config } from "@/lib/server/config";
 import { getDb } from "@/lib/server/db";
 import { telHref } from "@/lib/server/leads";
@@ -51,7 +51,7 @@ export default async function TeamPage({
       <main id="main" className={`container ${styles.main}`}>
         <h1 className={styles.pageTitle}>Team &amp; access</h1>
         <p className={styles.lede}>
-          Only the people listed here can get a sign-in link. Anyone an admin adds stays <strong>pending</strong> until a main admin
+          Only the people listed here can sign in. Anyone an admin adds stays <strong>pending</strong> until a main admin
           approves them.
         </p>
         {msg && <p className={styles.flash}>{msg}</p>}
@@ -99,6 +99,12 @@ export default async function TeamPage({
                   Phone number
                 </label>
                 <input id="phone" name="phone" type="tel" required maxLength={20} inputMode="tel" placeholder="e.g. +91 98765 43210" className={styles.input} />
+              </div>
+              <div className={styles.field}>
+                <label htmlFor="password" className={styles.label}>
+                  First password <span className={styles.small}>(at least {PASSWORD_MIN} characters; tell them yourself, they can change it)</span>
+                </label>
+                <input id="password" name="password" type="text" required minLength={PASSWORD_MIN} maxLength={200} autoComplete="off" className={styles.input} />
               </div>
               <fieldset className={styles.fieldset}>
                 <legend className={styles.label}>Access</legend>
@@ -265,7 +271,7 @@ export default async function TeamPage({
                             </form>
                             <details style={{ marginTop: 8 }}>
                               <summary className={styles.small} style={{ cursor: "pointer" }}>
-                                Edit name / phone
+                                Edit name / phone / password
                               </summary>
                               <form action="/api/admin/team" method="post" className={styles.form} style={{ marginTop: 8 }}>
                                 <input type="hidden" name="action" value="details" />
@@ -278,6 +284,10 @@ export default async function TeamPage({
                                   Phone
                                 </label>
                                 <input id={`p-${r.email}`} name="phone" type="tel" defaultValue={p?.phone} required maxLength={20} className={styles.input} />
+                                <label className="sr-only" htmlFor={`pw-${r.email}`}>
+                                  New password
+                                </label>
+                                <input id={`pw-${r.email}`} name="password" type="text" minLength={PASSWORD_MIN} maxLength={200} autoComplete="off" placeholder="New password (blank = keep)" className={styles.input} />
                                 <button type="submit" className={`btn btn-primary ${styles.btnSm}`}>
                                   Save
                                 </button>
